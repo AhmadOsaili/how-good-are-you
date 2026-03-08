@@ -45,7 +45,8 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { lead_id, company_id } = await req.json();
+    const { lead_id, company_id, notify = "both" } = await req.json();
+    // notify: "both" | "company" | "lead"
 
     // Fetch lead and company details
     const [leadRes, companyRes] = await Promise.all([
