@@ -188,13 +188,15 @@ export default function Dashboard() {
                   <TableCell>{lead.zip_code}</TableCell>
                   <TableCell>{lead.roof_age}</TableCell>
                   <TableCell>
-                    <Select value={lead.status} onValueChange={v => updateStatus(lead.id, v as "new" | "assigned" | "contacted" | "closed")}>
-                      <SelectTrigger className="h-7 w-28 text-xs">
-                        <Badge className={`${STATUS_COLORS[lead.status]} text-xs`}>{lead.status}</Badge>
+                    <Select value={lead.status} onValueChange={v => updateStatus(lead.id, v)}>
+                      <SelectTrigger className="h-7 w-32 text-xs">
+                        <Badge className={`${STATUS_COLORS[lead.status] || "bg-muted text-muted-foreground"} text-xs`}>
+                          {STATUS_LABELS[lead.status] || lead.status}
+                        </Badge>
                       </SelectTrigger>
                       <SelectContent>
-                        {["new", "assigned", "contacted", "closed"].map(s => (
-                          <SelectItem key={s} value={s} className="capitalize">{s}</SelectItem>
+                        {Object.entries(STATUS_LABELS).map(([value, label]) => (
+                          <SelectItem key={value} value={value}>{label}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
