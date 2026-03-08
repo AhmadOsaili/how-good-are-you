@@ -13,6 +13,7 @@ export default function PartnerLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
   const attemptedLogin = useRef(false);
 
   const navigate = useNavigate();
@@ -25,18 +26,22 @@ export default function PartnerLogin() {
       attemptedLogin.current = false;
       signOut();
       setSubmitting(false);
+      setError("You don't have partner access.");
+      toast.error("You don't have partner access to this portal.");
       toast.error("You don't have partner access to this portal.");
     }
   }, [loading, user, isPartner, rolesChecked]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
     setSubmitting(true);
     attemptedLogin.current = true;
-    const { error } = await signIn(email, password);
-    if (error) {
+    const { error: err } = await signIn(email, password);
+    if (err) {
       attemptedLogin.current = false;
-      toast.error(error.message);
+      setError("Invalid credentials");
+      toast.error(err.message);
       setSubmitting(false);
     }
     // Navigation will happen via the useEffect above
@@ -74,6 +79,7 @@ export default function PartnerLogin() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
+            {error && <p className="text-sm text-destructive">{error}</p>}
             <Button type="submit" className="w-full" disabled={submitting}>
               {submitting ? "Signing in…" : "Sign In"}
             </Button>
