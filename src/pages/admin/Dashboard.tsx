@@ -151,7 +151,9 @@ export default function Dashboard() {
             <SelectItem value="new">New</SelectItem>
             <SelectItem value="assigned">Assigned</SelectItem>
             <SelectItem value="contacted">Contacted</SelectItem>
-            <SelectItem value="closed">Closed</SelectItem>
+            <SelectItem value="in_progress">In Progress</SelectItem>
+            <SelectItem value="closed_won">Closed Won</SelectItem>
+            <SelectItem value="closed_lost">Closed Lost</SelectItem>
           </SelectContent>
         </Select>
       </div>
