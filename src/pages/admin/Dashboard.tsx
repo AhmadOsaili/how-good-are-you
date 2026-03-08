@@ -90,6 +90,14 @@ export default function Dashboard() {
       toast({ title: "Assigned!", description: "Lead assigned to company successfully." });
       if (assigningLead.status === "new") await updateStatus(assigningLead.id, "assigned");
       fetchLeads();
+
+      // Send email notifications (fire and forget)
+      supabase.functions.invoke("send-assignment-email", {
+        body: { lead_id: assigningLead.id, company_id: selectedCompany },
+      }).then(({ error: fnError }) => {
+        if (fnError) console.error("Email notification error:", fnError);
+        else toast({ title: "Emails Sent", description: "Notifications sent to company and homeowner." });
+      });
     }
     setAssigning(false);
     setAssigningLead(null);
