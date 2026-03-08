@@ -6,9 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, UserPlus, Mail, Send, CloudRain } from "lucide-react";
+import { Loader2, UserPlus, Mail, Send } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 type Lead = {
   id: string;
@@ -45,35 +44,7 @@ export default function Dashboard() {
   const [assigningLead, setAssigningLead] = useState<Lead | null>(null);
   const [selectedCompany, setSelectedCompany] = useState("");
   const [assigning, setAssigning] = useState(false);
-  const [hailReport, setHailReport] = useState<any>(null);
-  const [hailLoading, setHailLoading] = useState(false);
-  const [hailDialogOpen, setHailDialogOpen] = useState(false);
-  const [hailLeadName, setHailLeadName] = useState("");
   const { toast } = useToast();
-
-  async function fetchHailReport(lead: Lead) {
-    setHailLeadName(lead.name);
-    setHailReport(null);
-    setHailDialogOpen(true);
-    setHailLoading(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("hail-report", {
-        body: { street: lead.address, city: lead.city, state: lead.state, zip: lead.zip_code },
-      });
-      if (error) throw error;
-      if (data?.error) {
-        toast({ title: "Hail Report Error", description: data.error, variant: "destructive" });
-        setHailDialogOpen(false);
-      } else {
-        setHailReport(data);
-      }
-    } catch (err: any) {
-      toast({ title: "Error", description: err.message || "Failed to fetch hail report", variant: "destructive" });
-      setHailDialogOpen(false);
-    } finally {
-      setHailLoading(false);
-    }
-  }
 
   useEffect(() => {
     fetchLeads();
@@ -245,9 +216,6 @@ export default function Dashboard() {
                      {new Date(lead.created_at).toLocaleDateString()}
                    </TableCell>
                   <TableCell className="text-right space-x-1">
-                    <Button size="sm" variant="ghost" onClick={() => fetchHailReport(lead)}>
-                      <CloudRain className="h-3.5 w-3.5 mr-1" /> Hail
-                    </Button>
                     {lead.assigned_company_id && (
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -306,57 +274,6 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Hail Report Dialog */}
-      <Dialog open={hailDialogOpen} onOpenChange={setHailDialogOpen}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <CloudRain className="h-5 w-5 text-primary" />
-              Hail Report: {hailLeadName}
-            </DialogTitle>
-          </DialogHeader>
-          {hailLoading ? (
-            <div className="flex justify-center py-8">
-              <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-            </div>
-          ) : hailReport ? (
-            <ScrollArea className="max-h-[60vh]">
-              <div className="space-y-3">
-                <p className="text-sm text-muted-foreground">
-                  Address: {hailReport.address}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Coordinates: {hailReport.lat}, {hailReport.lng}
-                </p>
-                {Array.isArray(hailReport.hail_data) && hailReport.hail_data.length > 0 ? (
-                  <div className="space-y-2">
-                    <h3 className="text-sm font-semibold">Hail Events</h3>
-                    {hailReport.hail_data.map((event: any, i: number) => (
-                      <div key={i} className="rounded-md border p-3 text-sm space-y-1">
-                        {event.date && <p><span className="font-medium">Date:</span> {event.date}</p>}
-                        {event.size && <p><span className="font-medium">Size:</span> {event.size}</p>}
-                        {event.hailSize && <p><span className="font-medium">Hail Size:</span> {event.hailSize}</p>}
-                        {event.distance && <p><span className="font-medium">Distance:</span> {event.distance}</p>}
-                        {event.severity && <p><span className="font-medium">Severity:</span> {event.severity}</p>}
-                        {event.source && <p><span className="font-medium">Source:</span> {event.source}</p>}
-                      </div>
-                    ))}
-                  </div>
-                ) : hailReport.hail_data && typeof hailReport.hail_data === "object" ? (
-                  <div className="space-y-2">
-                    <h3 className="text-sm font-semibold">Hail Data</h3>
-                    <pre className="text-xs bg-muted p-3 rounded-md overflow-auto whitespace-pre-wrap">
-                      {JSON.stringify(hailReport.hail_data, null, 2)}
-                    </pre>
-                  </div>
-                ) : (
-                  <p className="text-sm text-muted-foreground">No hail data found for this address.</p>
-                )}
-              </div>
-            </ScrollArea>
-          ) : null}
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
