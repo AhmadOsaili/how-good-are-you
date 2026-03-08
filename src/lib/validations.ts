@@ -14,11 +14,11 @@ export type LeadFormValues = z.infer<typeof leadFormSchema>;
 
 export const companyFormSchema = z.object({
   name: z.string().trim().min(2, "Company name is required").max(200),
-  phone: z.string().trim().max(20).optional(),
+  phone: z.string().trim().max(20).optional().or(z.literal("")),
   email: z.string().trim().email("Invalid email").max(255).optional().or(z.literal("")),
-  service_area: z.string().trim().max(500).optional(),
-  website: z.string().trim().url("Invalid URL").max(500).optional().or(z.literal("")),
-  notes: z.string().trim().max(1000).optional(),
+  service_area: z.string().trim().max(500).optional().or(z.literal("")),
+  website: z.string().trim().max(500).optional().or(z.literal("")),
+  notes: z.string().trim().max(1000).optional().or(z.literal("")),
 });
 
 export type CompanyFormValues = z.infer<typeof companyFormSchema>;
