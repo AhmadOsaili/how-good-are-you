@@ -37,16 +37,9 @@ Deno.serve(async (req) => {
 
   const ihmAccessKey = Deno.env.get("IHM_ACCESS_KEY");
   const ihmAccessSecret = Deno.env.get("IHM_ACCESS_SECRET");
-  const googleApiKey = Deno.env.get("GOOGLE_PLACES_API_KEY");
 
   if (!ihmAccessKey || !ihmAccessSecret) {
     return new Response(JSON.stringify({ error: "IHM credentials not configured" }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
-  }
-  if (!googleApiKey) {
-    return new Response(JSON.stringify({ error: "Google API key not configured" }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
@@ -61,30 +54,73 @@ Deno.serve(async (req) => {
       });
     }
 
-    const addressParts = [street, city, state, zip].filter(Boolean);
-    const fullAddress = addressParts.join(", ");
+    const basicAuth = btoa(`${ihmAccessKey}:${ihmAccessSecret}`);
 
-    // Step 1: Geocode with Google to get lat/lng
-    const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(fullAddress)}&key=${googleApiKey}`;
-    const geocodeRes = await fetch(geocodeUrl);
-    const geocodeData = await geocodeRes.json();
+    // Step 1: Create/update address marker via AddressMonitoringImport2g
+    const importUrl = `${IHM_BASE}/AddressMonitoringImport2g`;
+    const importBody = {
+      street,
+      city: city || "",
+      state: state || "",
+      zip,
+      customer_name: null,
+      customer_phone: null,
+      customer_mobile: null,
+      customer_email: null,
+      comment1: null,
+      comment2: null,
+      comment3: null,
+      address_monitoring_size: 0,
+      status: null,
+      salesman_email: null,
+      AddressMarker_id: null,
+      external_key: null,
+      integration_partner: 2,
+      latitude: null,
+      longitude: null,
+    };
 
-    if (!geocodeData.results || geocodeData.results.length === 0) {
+    console.log("Calling AddressMonitoringImport2g with:", JSON.stringify(importBody));
+
+    const importRes = await fetch(importUrl, {
+      method: "POST",
+      headers: {
+        Authorization: `Basic ${basicAuth}`,
+        "Content-Type": "application/json",
+        "User-Agent": "App",
+        "X-Forwarded-For": "0.0.0.0",
+      },
+      body: JSON.stringify(importBody),
+    });
+
+    if (!importRes.ok) {
+      const errText = await importRes.text();
+      console.error("IHM import error:", importRes.status, errText);
       return new Response(
-        JSON.stringify({ error: "Could not geocode address" }),
-        { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        JSON.stringify({ error: "Failed to create address marker", details: errText }),
+        { status: importRes.status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const { lat, lng } = geocodeData.results[0].geometry.location;
+    const importData = await importRes.json();
+    console.log("AddressMonitoringImport2g response:", JSON.stringify(importData));
 
-    // Step 2: Get hail impact history from IHM using lat/lng
-    const basicAuth = btoa(`${ihmAccessKey}:${ihmAccessSecret}`);
-    const hailUrl = `${IHM_BASE}/ImpactDatesForLatLong?Lat=${lat}&Long=${lng}&Months=60`;
+    if (!importData.success || !importData.AddressMarker_id) {
+      return new Response(
+        JSON.stringify({ error: "Failed to create address marker", details: importData }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const markerId = importData.AddressMarker_id;
+
+    // Step 2: Get hail impact history using the marker ID
+    const hailUrl = `${IHM_BASE}/ImpactDatesForAddressMarker?AddressMarker_id=${markerId}&Months=60`;
     const hailRes = await fetch(hailUrl, {
       headers: {
         Authorization: `Basic ${basicAuth}`,
         "User-Agent": "App",
+        "X-Forwarded-For": "0.0.0.0",
       },
     });
 
@@ -99,12 +135,14 @@ Deno.serve(async (req) => {
 
     const hailData = await hailRes.json();
 
+    const addressParts = [street, city, state, zip].filter(Boolean);
+    const fullAddress = addressParts.join(", ");
+
     return new Response(
       JSON.stringify({
         success: true,
         address: fullAddress,
-        lat,
-        lng,
+        address_marker_id: markerId,
         hail_data: hailData,
       }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
