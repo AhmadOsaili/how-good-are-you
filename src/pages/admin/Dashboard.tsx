@@ -124,7 +124,7 @@ export default function Dashboard() {
                   <TableCell>{lead.zip_code}</TableCell>
                   <TableCell>{lead.roof_age}</TableCell>
                   <TableCell>
-                    <Select value={lead.status} onValueChange={v => updateStatus(lead.id, v)}>
+                    <Select value={lead.status} onValueChange={v => updateStatus(lead.id, v as "new" | "assigned" | "contacted" | "closed")}>
                       <SelectTrigger className="h-7 w-28 text-xs">
                         <Badge className={`${STATUS_COLORS[lead.status]} text-xs`}>{lead.status}</Badge>
                       </SelectTrigger>
