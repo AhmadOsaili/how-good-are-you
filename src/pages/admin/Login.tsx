@@ -21,7 +21,11 @@ export default function AdminLogin() {
   const attemptedLogin = useRef(false);
 
   useEffect(() => {
-    if (authLoading || !user || !rolesChecked) return;
+    if (authLoading || !rolesChecked) return;
+    if (!user) {
+      setLoading(false);
+      return;
+    }
     if (isAdmin) {
       navigate("/admin/dashboard", { replace: true });
     } else if (attemptedLogin.current) {

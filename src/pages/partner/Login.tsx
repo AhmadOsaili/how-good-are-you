@@ -19,7 +19,11 @@ export default function PartnerLogin() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (loading || !user || !rolesChecked) return;
+    if (loading || !rolesChecked) return;
+    if (!user) {
+      setSubmitting(false);
+      return;
+    }
     if (isPartner || isPartnerMember) {
       navigate("/partner/leads", { replace: true });
     } else if (attemptedLogin.current) {
@@ -27,7 +31,6 @@ export default function PartnerLogin() {
       signOut();
       setSubmitting(false);
       setError("You don't have partner access.");
-      toast.error("You don't have partner access to this portal.");
       toast.error("You don't have partner access to this portal.");
     }
   }, [loading, user, isPartner, isPartnerMember, rolesChecked]);
