@@ -32,6 +32,7 @@ export default function AdminLogin() {
     setLoading(false);
     if (err) {
       setError("Invalid credentials");
+      toast.error("Invalid credentials. Please check your email and password.");
       return;
     }
     // Navigation will happen via the auth state check above
