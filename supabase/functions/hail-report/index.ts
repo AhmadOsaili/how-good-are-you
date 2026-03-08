@@ -6,12 +6,14 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+const IHM_BASE = "https://maps.interactivehailmaps.com/ExternalApi";
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
-  // Verify caller is authenticated admin
+  // Verify caller is authenticated
   const authHeader = req.headers.get("Authorization");
   if (!authHeader?.startsWith("Bearer ")) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
@@ -44,9 +46,9 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { address } = await req.json();
-    if (!address) {
-      return new Response(JSON.stringify({ error: "address is required" }), {
+    const { street, city, state, zip } = await req.json();
+    if (!street || !zip) {
+      return new Response(JSON.stringify({ error: "street and zip are required" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -54,44 +56,57 @@ Deno.serve(async (req) => {
 
     const basicAuth = btoa(`${ihmAccessKey}:${ihmAccessSecret}`);
 
-    // Step 1: Geocode the address using IHM's address search
-    const geocodeUrl = `https://api.interactivehailmaps.com/v1/address/search?query=${encodeURIComponent(address)}`;
-    const geocodeRes = await fetch(geocodeUrl, {
-      headers: { Authorization: `Basic ${basicAuth}` },
+    // Step 1: Create/update address marker to get AddressMarker_id
+    const markerRes = await fetch(`${IHM_BASE}/AddressMonitoringImport2g`, {
+      method: "POST",
+      headers: {
+        Authorization: `Basic ${basicAuth}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        street,
+        city: city || "",
+        state: state || "",
+        zip,
+        customer_name: null,
+        customer_phone: null,
+        customer_mobile: null,
+        customer_email: null,
+        comment1: null,
+        comment2: null,
+        comment3: null,
+        address_monitoring_size: 0,
+        status: "Monitoring",
+        salesman_email: null,
+        AddressMarker_id: null,
+        external_key: null,
+        integration_partner: 2,
+        latitude: null,
+        longitude: null,
+      }),
     });
 
-    if (!geocodeRes.ok) {
-      const errText = await geocodeRes.text();
-      console.error("IHM geocode error:", geocodeRes.status, errText);
+    if (!markerRes.ok) {
+      const errText = await markerRes.text();
+      console.error("IHM marker error:", markerRes.status, errText);
       return new Response(
-        JSON.stringify({ error: "Failed to geocode address", details: errText }),
-        { status: geocodeRes.status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        JSON.stringify({ error: "Failed to create address marker", details: errText }),
+        { status: markerRes.status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const geocodeData = await geocodeRes.json();
-
-    // Extract coordinates from geocode result
-    let lat: number | null = null;
-    let lng: number | null = null;
-
-    if (Array.isArray(geocodeData) && geocodeData.length > 0) {
-      lat = geocodeData[0].latitude ?? geocodeData[0].lat;
-      lng = geocodeData[0].longitude ?? geocodeData[0].lng ?? geocodeData[0].lon;
-    } else if (geocodeData.latitude || geocodeData.lat) {
-      lat = geocodeData.latitude ?? geocodeData.lat;
-      lng = geocodeData.longitude ?? geocodeData.lng ?? geocodeData.lon;
-    }
-
-    if (lat == null || lng == null) {
+    const markerData = await markerRes.json();
+    if (!markerData.success || !markerData.AddressMarker_id) {
       return new Response(
-        JSON.stringify({ error: "Could not geocode address", geocode_response: geocodeData }),
-        { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        JSON.stringify({ error: "Failed to create address marker", details: markerData }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    // Step 2: Get hail history for the coordinates
-    const hailUrl = `https://api.interactivehailmaps.com/v1/hail/history?lat=${lat}&lng=${lng}`;
+    const markerId = markerData.AddressMarker_id;
+
+    // Step 2: Get hail impact history for the marker (last 60 months)
+    const hailUrl = `${IHM_BASE}/ImpactDatesForAddressMarker?AddressMarker_id=${markerId}&Months=60`;
     const hailRes = await fetch(hailUrl, {
       headers: { Authorization: `Basic ${basicAuth}` },
     });
@@ -108,7 +123,12 @@ Deno.serve(async (req) => {
     const hailData = await hailRes.json();
 
     return new Response(
-      JSON.stringify({ success: true, address, lat, lng, hail_data: hailData }),
+      JSON.stringify({
+        success: true,
+        address: `${street}, ${city || ""} ${state || ""} ${zip}`.trim(),
+        marker_id: markerId,
+        hail_data: hailData,
+      }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error: unknown) {
