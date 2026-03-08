@@ -100,6 +100,7 @@ Deno.serve(async (req) => {
     }
 
     // Email to the homeowner
+    if (notify === "both" || notify === "lead") {
     emails.push(
       fetch("https://api.resend.com/emails", {
         method: "POST",
