@@ -36,8 +36,12 @@ export default function AdminLogin() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
     setLoading(true);
-    attemptedLogin.current = true;
     const { error: err } = await signIn(email, password);
     if (err) {
       attemptedLogin.current = false;
