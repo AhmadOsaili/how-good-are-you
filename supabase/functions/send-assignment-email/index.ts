@@ -45,7 +45,8 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { lead_id, company_id } = await req.json();
+    const { lead_id, company_id, notify = "both" } = await req.json();
+    // notify: "both" | "company" | "lead"
 
     // Fetch lead and company details
     const [leadRes, companyRes] = await Promise.all([
@@ -62,7 +63,7 @@ Deno.serve(async (req) => {
     const emails: Promise<Response>[] = [];
 
     // Email to the company (if they have an email)
-    if (company.email) {
+    if (company.email && (notify === "both" || notify === "company")) {
       emails.push(
         fetch("https://api.resend.com/emails", {
           method: "POST",
@@ -99,6 +100,7 @@ Deno.serve(async (req) => {
     }
 
     // Email to the homeowner
+    if (notify === "both" || notify === "lead") {
     emails.push(
       fetch("https://api.resend.com/emails", {
         method: "POST",
@@ -132,6 +134,7 @@ Deno.serve(async (req) => {
         }),
       })
     );
+    }
 
     const results = await Promise.all(emails);
     const errors: string[] = [];

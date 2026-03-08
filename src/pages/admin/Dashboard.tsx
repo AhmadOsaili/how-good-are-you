@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, UserPlus } from "lucide-react";
+import { Loader2, UserPlus, Mail, Send } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 type Lead = {
   id: string;
@@ -20,6 +21,7 @@ type Lead = {
   status: string;
   created_at: string;
   assigned_company?: string;
+  assigned_company_id?: string;
 };
 
 type Company = { id: string; name: string };
@@ -58,15 +60,19 @@ export default function Dashboard() {
       .from("lead_assignments")
       .select("lead_id, company_id, companies(name)");
 
-    const assignmentMap = new Map<string, string>();
+    const assignmentMap = new Map<string, { name: string; id: string }>();
     if (assignments) {
       for (const a of assignments as any[]) {
         const companyName = a.companies?.name;
-        if (companyName) assignmentMap.set(a.lead_id, companyName);
+        if (companyName) assignmentMap.set(a.lead_id, { name: companyName, id: a.company_id });
       }
     }
 
-    setLeads(leads.map(l => ({ ...l, assigned_company: assignmentMap.get(l.id) })));
+    setLeads(leads.map(l => ({
+      ...l,
+      assigned_company: assignmentMap.get(l.id)?.name,
+      assigned_company_id: assignmentMap.get(l.id)?.id,
+    })));
     setLoading(false);
   }
 
@@ -102,6 +108,23 @@ export default function Dashboard() {
     setAssigning(false);
     setAssigningLead(null);
     setSelectedCompany("");
+  }
+
+  async function resendNotification(lead: Lead, notify: "both" | "company" | "lead") {
+    if (!lead.assigned_company_id) {
+      toast({ title: "Not assigned", description: "This lead hasn't been assigned to a company yet.", variant: "destructive" });
+      return;
+    }
+    const labels = { both: "company & homeowner", company: "company", lead: "homeowner" };
+    toast({ title: "Sending…", description: `Resending notification to ${labels[notify]}.` });
+    const { error } = await supabase.functions.invoke("send-assignment-email", {
+      body: { lead_id: lead.id, company_id: lead.assigned_company_id, notify },
+    });
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Sent!", description: `Notification resent to ${labels[notify]}.` });
+    }
   }
 
   return (
@@ -171,7 +194,27 @@ export default function Dashboard() {
                    <TableCell className="text-sm text-muted-foreground">
                      {new Date(lead.created_at).toLocaleDateString()}
                    </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-right space-x-1">
+                    {lead.assigned_company_id && (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button size="sm" variant="ghost">
+                            <Mail className="h-3.5 w-3.5 mr-1" /> Resend
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => resendNotification(lead, "both")}>
+                            <Send className="h-3.5 w-3.5 mr-2" /> Both
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => resendNotification(lead, "company")}>
+                            <Mail className="h-3.5 w-3.5 mr-2" /> Company Only
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => resendNotification(lead, "lead")}>
+                            <Mail className="h-3.5 w-3.5 mr-2" /> Homeowner Only
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )}
                     <Dialog>
                       <DialogTrigger asChild>
                         <Button size="sm" variant="outline" onClick={() => setAssigningLead(lead)}>
