@@ -9,7 +9,7 @@ import { Building2 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function PartnerLogin() {
-  const { user, isPartner, loading, signIn, signOut } = useAuth();
+  const { user, isPartner, loading, rolesChecked, signIn, signOut } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -18,7 +18,7 @@ export default function PartnerLogin() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (loading || !user) return;
+    if (loading || !user || !rolesChecked) return;
     if (isPartner) {
       navigate("/partner/leads", { replace: true });
     } else if (attemptedLogin.current) {
@@ -27,7 +27,7 @@ export default function PartnerLogin() {
       setSubmitting(false);
       toast.error("You don't have partner access to this portal.");
     }
-  }, [loading, user, isPartner]);
+  }, [loading, user, isPartner, rolesChecked]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
