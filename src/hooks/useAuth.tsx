@@ -6,6 +6,7 @@ export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isPartner, setIsPartner] = useState(false);
+  const [isPartnerMember, setIsPartnerMember] = useState(false);
   const [loading, setLoading] = useState(true);
   const [rolesChecked, setRolesChecked] = useState(false);
 
