@@ -79,6 +79,12 @@ export default function Dashboard() {
 
   useEffect(() => { fetchLeads(); }, [filter]);
 
+  const filteredLeads = companyFilter === "all"
+    ? leads
+    : companyFilter === "unassigned"
+      ? leads.filter(l => !l.assigned_company_id)
+      : leads.filter(l => l.assigned_company_id === companyFilter);
+
   async function updateStatus(id: string, status: "new" | "assigned" | "contacted" | "closed") {
     await supabase.from("leads").update({ status }).eq("id", id);
     setLeads(prev => prev.map(l => l.id === id ? { ...l, status } : l));
