@@ -16,7 +16,7 @@ const NAV = [
 ];
 
 export default function PartnerLayout() {
-  const { user, isPartner, loading, signOut } = useAuth();
+  const { user, isPartner, isPartnerMember, loading, signOut } = useAuth();
 
   if (loading)
     return (
@@ -25,7 +25,7 @@ export default function PartnerLayout() {
       </div>
     );
 
-  if (!user || !isPartner) return <Navigate to="/partner/login" replace />;
+  if (!user || (!isPartner && !isPartnerMember)) return <Navigate to="/partner/login" replace />;
 
   return (
     <SidebarProvider>

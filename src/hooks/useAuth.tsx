@@ -6,6 +6,7 @@ export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isPartner, setIsPartner] = useState(false);
+  const [isPartnerMember, setIsPartnerMember] = useState(false);
   const [loading, setLoading] = useState(true);
   const [rolesChecked, setRolesChecked] = useState(false);
 
@@ -22,6 +23,7 @@ export function useAuth() {
       const roles = data?.map((r) => r.role) ?? [];
       setIsAdmin(roles.includes("admin"));
       setIsPartner(roles.includes("partner"));
+      setIsPartnerMember(roles.includes("partner_member"));
       setRolesChecked(true);
     };
 
@@ -49,6 +51,7 @@ export function useAuth() {
         } else {
           setIsAdmin(false);
           setIsPartner(false);
+          setIsPartnerMember(false);
           setRolesChecked(true);
         }
         if (mounted) setLoading(false);
@@ -66,5 +69,5 @@ export function useAuth() {
 
   const signOut = () => supabase.auth.signOut();
 
-  return { user, isAdmin, isPartner, loading, rolesChecked, signIn, signOut };
+  return { user, isAdmin, isPartner, isPartnerMember, loading, rolesChecked, signIn, signOut };
 }
