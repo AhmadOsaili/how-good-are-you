@@ -14,10 +14,13 @@ import PartnerLayout from "./components/PartnerLayout";
 import PartnerLeads from "./pages/partner/Leads";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
+import { useInactivityLogout } from "./hooks/useInactivityLogout";
 
 const queryClient = new QueryClient();
 
-const App = () => (
+const AppContent = () => {
+  useInactivityLogout();
+  return (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
