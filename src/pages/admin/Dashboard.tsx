@@ -164,8 +164,8 @@ export default function Dashboard() {
 
       {loading ? (
         <div className="flex justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
-      ) : leads.length === 0 ? (
-        <p className="text-center text-muted-foreground py-12">No leads yet.</p>
+      ) : filteredLeads.length === 0 ? (
+        <p className="text-center text-muted-foreground py-12">No leads found.</p>
       ) : (
         <div className="rounded-lg border bg-card">
           <Table>
