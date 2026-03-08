@@ -17,7 +17,7 @@ export function LeadForm() {
   const [submitting, setSubmitting] = useState(false);
   const form = useForm<LeadFormValues>({
     resolver: zodResolver(leadFormSchema),
-    defaultValues: { name: "", address: "", zip_code: "", phone: "", email: "", roof_age: "", concerns: "" },
+    defaultValues: { name: "", address: "", city: "", state: "", zip_code: "", phone: "", email: "", roof_age: "", concerns: "" },
   });
 
   async function onSubmit(values: LeadFormValues) {
