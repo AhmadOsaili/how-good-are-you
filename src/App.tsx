@@ -14,12 +14,14 @@ import PartnerLayout from "./components/PartnerLayout";
 import PartnerLeads from "./pages/partner/Leads";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
+import { useInactivityLogout } from "./hooks/useInactivityLogout";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
+const AppContent = () => {
+  useInactivityLogout();
+  return (
+    <>
       <Toaster />
       <Sonner />
       <BrowserRouter>
@@ -39,6 +41,14 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
+    </>
+  );
+};
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <AppContent />
     </TooltipProvider>
   </QueryClientProvider>
 );
