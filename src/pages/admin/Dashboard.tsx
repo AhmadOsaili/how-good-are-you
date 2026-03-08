@@ -303,6 +303,58 @@ export default function Dashboard() {
           </Table>
         </div>
       )}
+
+      {/* Hail Report Dialog */}
+      <Dialog open={hailDialogOpen} onOpenChange={setHailDialogOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <CloudRain className="h-5 w-5 text-primary" />
+              Hail Report: {hailLeadName}
+            </DialogTitle>
+          </DialogHeader>
+          {hailLoading ? (
+            <div className="flex justify-center py-8">
+              <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+            </div>
+          ) : hailReport ? (
+            <ScrollArea className="max-h-[60vh]">
+              <div className="space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  Address: {hailReport.address}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Coordinates: {hailReport.lat}, {hailReport.lng}
+                </p>
+                {Array.isArray(hailReport.hail_data) && hailReport.hail_data.length > 0 ? (
+                  <div className="space-y-2">
+                    <h3 className="text-sm font-semibold">Hail Events</h3>
+                    {hailReport.hail_data.map((event: any, i: number) => (
+                      <div key={i} className="rounded-md border p-3 text-sm space-y-1">
+                        {event.date && <p><span className="font-medium">Date:</span> {event.date}</p>}
+                        {event.size && <p><span className="font-medium">Size:</span> {event.size}</p>}
+                        {event.hailSize && <p><span className="font-medium">Hail Size:</span> {event.hailSize}</p>}
+                        {event.distance && <p><span className="font-medium">Distance:</span> {event.distance}</p>}
+                        {event.severity && <p><span className="font-medium">Severity:</span> {event.severity}</p>}
+                        {event.source && <p><span className="font-medium">Source:</span> {event.source}</p>}
+                      </div>
+                    ))}
+                  </div>
+                ) : hailReport.hail_data && typeof hailReport.hail_data === "object" ? (
+                  <div className="space-y-2">
+                    <h3 className="text-sm font-semibold">Hail Data</h3>
+                    <pre className="text-xs bg-muted p-3 rounded-md overflow-auto whitespace-pre-wrap">
+                      {JSON.stringify(hailReport.hail_data, null, 2)}
+                    </pre>
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground">No hail data found for this address.</p>
+                )}
+              </div>
+            </ScrollArea>
+          ) : null}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
