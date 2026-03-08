@@ -50,38 +50,6 @@ export type Database = {
         }
         Relationships: []
       }
-      company_users: {
-        Row: {
-          company_id: string
-          company_role: string
-          created_at: string
-          id: string
-          user_id: string
-        }
-        Insert: {
-          company_id: string
-          company_role?: string
-          created_at?: string
-          id?: string
-          user_id: string
-        }
-        Update: {
-          company_id?: string
-          company_role?: string
-          created_at?: string
-          id?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "company_users_company_id_fkey"
-            columns: ["company_id"]
-            isOneToOne: false
-            referencedRelation: "companies"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       lead_assignments: {
         Row: {
           assigned_at: string
@@ -186,7 +154,6 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      get_user_company_id: { Args: { _user_id: string }; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -194,21 +161,10 @@ export type Database = {
         }
         Returns: boolean
       }
-      is_company_admin: {
-        Args: { _company_id: string; _user_id: string }
-        Returns: boolean
-      }
     }
     Enums: {
-      app_role: "admin" | "partner"
-      lead_status:
-        | "new"
-        | "assigned"
-        | "contacted"
-        | "closed"
-        | "in_progress"
-        | "closed_won"
-        | "closed_lost"
+      app_role: "admin"
+      lead_status: "new" | "assigned" | "contacted" | "closed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -336,16 +292,8 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "partner"],
-      lead_status: [
-        "new",
-        "assigned",
-        "contacted",
-        "closed",
-        "in_progress",
-        "closed_won",
-        "closed_lost",
-      ],
+      app_role: ["admin"],
+      lead_status: ["new", "assigned", "contacted", "closed"],
     },
   },
 } as const

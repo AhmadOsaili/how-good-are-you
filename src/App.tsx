@@ -9,10 +9,6 @@ import AdminLogin from "./pages/admin/Login";
 import AdminLayout from "./components/AdminLayout";
 import Dashboard from "./pages/admin/Dashboard";
 import Companies from "./pages/admin/Companies";
-import PartnerLogin from "./pages/partner/Login";
-import PartnerLayout from "./components/PartnerLayout";
-import PartnerDashboard from "./pages/partner/Dashboard";
-import Team from "./pages/partner/Team";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 
@@ -28,15 +24,10 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/thank-you" element={<ThankYou />} />
           <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/partner/login" element={<PartnerLogin />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="companies" element={<Companies />} />
-          </Route>
-          <Route path="/partner" element={<PartnerLayout />}>
-            <Route path="dashboard" element={<PartnerDashboard />} />
-            <Route path="team" element={<Team />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

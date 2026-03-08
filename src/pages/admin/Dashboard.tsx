@@ -30,20 +30,7 @@ const STATUS_COLORS: Record<string, string> = {
   new: "bg-accent text-accent-foreground",
   assigned: "bg-primary/80 text-primary-foreground",
   contacted: "bg-secondary text-secondary-foreground",
-  in_progress: "bg-primary/60 text-primary-foreground",
-  closed_won: "bg-primary text-primary-foreground",
-  closed_lost: "bg-muted text-muted-foreground",
   closed: "bg-muted text-muted-foreground",
-};
-
-const STATUS_LABELS: Record<string, string> = {
-  new: "New",
-  assigned: "Assigned",
-  contacted: "Contacted",
-  in_progress: "In Progress",
-  closed_won: "Closed Won",
-  closed_lost: "Closed Lost",
-  closed: "Closed",
 };
 
 export default function Dashboard() {
@@ -64,7 +51,7 @@ export default function Dashboard() {
   async function fetchLeads() {
     setLoading(true);
     let query = supabase.from("leads").select("*").order("created_at", { ascending: false });
-    if (filter !== "all") query = query.eq("status", filter as any);
+    if (filter !== "all") query = query.eq("status", filter as "new" | "assigned" | "contacted" | "closed");
     const { data: leadsData } = await query;
     const leads = (leadsData as Lead[]) || [];
 
@@ -91,8 +78,8 @@ export default function Dashboard() {
 
   useEffect(() => { fetchLeads(); }, [filter]);
 
-  async function updateStatus(id: string, status: string) {
-    await supabase.from("leads").update({ status: status as any }).eq("id", id);
+  async function updateStatus(id: string, status: "new" | "assigned" | "contacted" | "closed") {
+    await supabase.from("leads").update({ status }).eq("id", id);
     setLeads(prev => prev.map(l => l.id === id ? { ...l, status } : l));
   }
 
@@ -151,9 +138,7 @@ export default function Dashboard() {
             <SelectItem value="new">New</SelectItem>
             <SelectItem value="assigned">Assigned</SelectItem>
             <SelectItem value="contacted">Contacted</SelectItem>
-            <SelectItem value="in_progress">In Progress</SelectItem>
-            <SelectItem value="closed_won">Closed Won</SelectItem>
-            <SelectItem value="closed_lost">Closed Lost</SelectItem>
+            <SelectItem value="closed">Closed</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -188,15 +173,13 @@ export default function Dashboard() {
                   <TableCell>{lead.zip_code}</TableCell>
                   <TableCell>{lead.roof_age}</TableCell>
                   <TableCell>
-                    <Select value={lead.status} onValueChange={v => updateStatus(lead.id, v)}>
-                      <SelectTrigger className="h-7 w-32 text-xs">
-                        <Badge className={`${STATUS_COLORS[lead.status] || "bg-muted text-muted-foreground"} text-xs`}>
-                          {STATUS_LABELS[lead.status] || lead.status}
-                        </Badge>
+                    <Select value={lead.status} onValueChange={v => updateStatus(lead.id, v as "new" | "assigned" | "contacted" | "closed")}>
+                      <SelectTrigger className="h-7 w-28 text-xs">
+                        <Badge className={`${STATUS_COLORS[lead.status]} text-xs`}>{lead.status}</Badge>
                       </SelectTrigger>
                       <SelectContent>
-                        {Object.entries(STATUS_LABELS).map(([value, label]) => (
-                          <SelectItem key={value} value={value}>{label}</SelectItem>
+                        {["new", "assigned", "contacted", "closed"].map(s => (
+                          <SelectItem key={s} value={s} className="capitalize">{s}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
