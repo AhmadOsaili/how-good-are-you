@@ -194,7 +194,27 @@ export default function Dashboard() {
                    <TableCell className="text-sm text-muted-foreground">
                      {new Date(lead.created_at).toLocaleDateString()}
                    </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-right space-x-1">
+                    {lead.assigned_company_id && (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button size="sm" variant="ghost">
+                            <Mail className="h-3.5 w-3.5 mr-1" /> Resend
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => resendNotification(lead, "both")}>
+                            <Send className="h-3.5 w-3.5 mr-2" /> Both
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => resendNotification(lead, "company")}>
+                            <Mail className="h-3.5 w-3.5 mr-2" /> Company Only
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => resendNotification(lead, "lead")}>
+                            <Mail className="h-3.5 w-3.5 mr-2" /> Homeowner Only
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )}
                     <Dialog>
                       <DialogTrigger asChild>
                         <Button size="sm" variant="outline" onClick={() => setAssigningLead(lead)}>
