@@ -35,8 +35,8 @@ Deno.serve(async (req) => {
     });
   }
 
-  const ihmAccessKey = Deno.env.get("IHM_ACCESS_KEY");
-  const ihmAccessSecret = Deno.env.get("IHM_ACCESS_SECRET");
+  const ihmAccessKey = Deno.env.get("IHM_ACCESS_KEY")?.trim();
+  const ihmAccessSecret = Deno.env.get("IHM_ACCESS_SECRET")?.trim();
 
   if (!ihmAccessKey || !ihmAccessSecret) {
     return new Response(JSON.stringify({ error: "IHM credentials not configured" }), {
