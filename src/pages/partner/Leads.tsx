@@ -64,7 +64,7 @@ export default function PartnerLeads() {
 
     const { data, error } = await supabase
       .from("lead_assignments")
-      .select("id, lead_id, assigned_at, lead:leads(id, name, email, phone, address, zip_code, roof_age, concerns, status, created_at)")
+      .select("id, lead_id, assigned_at, lead:leads(id, name, email, phone, address, city, state, zip_code, roof_age, concerns, status, created_at)")
       .order("assigned_at", { ascending: false });
 
     if (error) {
