@@ -84,7 +84,7 @@ Deno.serve(async (req) => {
     const hailRes = await fetch(hailUrl, {
       headers: {
         Authorization: `Basic ${basicAuth}`,
-        "User-Agent": "LovableApp/1.0",
+        "User-Agent": "App",
       },
     });
 
