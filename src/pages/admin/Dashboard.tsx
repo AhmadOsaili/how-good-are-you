@@ -56,7 +56,7 @@ export default function Dashboard() {
 
   useEffect(() => { fetchLeads(); }, [filter]);
 
-  async function updateStatus(id: string, status: string) {
+  async function updateStatus(id: string, status: "new" | "assigned" | "contacted" | "closed") {
     await supabase.from("leads").update({ status }).eq("id", id);
     setLeads(prev => prev.map(l => l.id === id ? { ...l, status } : l));
   }
