@@ -78,7 +78,30 @@ export function LeadForm() {
             <FormMessage />
           </FormItem>
         )} />
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+          <FormField control={form.control} name="city" render={({ field }) => (
+            <FormItem>
+              <FormLabel>City</FormLabel>
+              <FormControl><Input placeholder="Dallas" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="state" render={({ field }) => (
+            <FormItem>
+              <FormLabel>State</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger><SelectValue placeholder="Select state" /></SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {US_STATES.map(s => (
+                    <SelectItem key={s} value={s}>{s}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )} />
           <FormField control={form.control} name="zip_code" render={({ field }) => (
             <FormItem>
               <FormLabel>ZIP Code</FormLabel>
@@ -93,6 +116,8 @@ export function LeadForm() {
               <FormMessage />
             </FormItem>
           )} />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-1 gap-4">
           <FormField control={form.control} name="roof_age" render={({ field }) => (
             <FormItem>
               <FormLabel>Roof Age</FormLabel>

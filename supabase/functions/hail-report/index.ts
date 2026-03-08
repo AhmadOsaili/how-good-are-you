@@ -53,7 +53,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { street, zip } = await req.json();
+    const { street, city, state, zip } = await req.json();
     if (!street || !zip) {
       return new Response(JSON.stringify({ error: "street and zip are required" }), {
         status: 400,
@@ -61,7 +61,8 @@ Deno.serve(async (req) => {
       });
     }
 
-    const fullAddress = `${street}, ${zip}`;
+    const addressParts = [street, city, state, zip].filter(Boolean);
+    const fullAddress = addressParts.join(", ");
 
     // Step 1: Geocode with Google to get lat/lng
     const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(fullAddress)}&key=${googleApiKey}`;

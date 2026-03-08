@@ -56,7 +56,7 @@ export default function Dashboard() {
     setHailLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("hail-report", {
-        body: { street: lead.address, zip: lead.zip_code },
+        body: { street: lead.address, city: (lead as any).city, state: (lead as any).state, zip: lead.zip_code },
       });
       if (error) throw error;
       if (data?.error) {
