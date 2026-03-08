@@ -151,10 +151,17 @@ export default function Dashboard() {
                         ))}
                       </SelectContent>
                     </Select>
-                  </TableCell>
-                  <TableCell className="text-sm text-muted-foreground">
-                    {new Date(lead.created_at).toLocaleDateString()}
-                  </TableCell>
+                   </TableCell>
+                   <TableCell>
+                     {lead.assigned_company ? (
+                       <Badge className="bg-primary/80 text-primary-foreground text-xs">{lead.assigned_company}</Badge>
+                     ) : (
+                       <span className="text-xs text-muted-foreground">—</span>
+                     )}
+                   </TableCell>
+                   <TableCell className="text-sm text-muted-foreground">
+                     {new Date(lead.created_at).toLocaleDateString()}
+                   </TableCell>
                   <TableCell className="text-right">
                     <Dialog>
                       <DialogTrigger asChild>
