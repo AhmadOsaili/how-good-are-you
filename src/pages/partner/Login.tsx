@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -9,27 +9,37 @@ import { Building2 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function PartnerLogin() {
-  const { user, isPartner, loading, signIn } = useAuth();
+  const { user, isPartner, loading, signIn, signOut } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const attemptedLogin = useRef(false);
 
   const navigate = useNavigate();
 
-  // Redirect when auth state confirms partner role
-  if (!loading && user && isPartner) {
-    navigate("/partner/leads", { replace: true });
-  }
+  useEffect(() => {
+    if (loading || !user) return;
+    if (isPartner) {
+      navigate("/partner/leads", { replace: true });
+    } else if (attemptedLogin.current) {
+      attemptedLogin.current = false;
+      signOut();
+      setSubmitting(false);
+      toast.error("You don't have partner access to this portal.");
+    }
+  }, [loading, user, isPartner]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
+    attemptedLogin.current = true;
     const { error } = await signIn(email, password);
     if (error) {
+      attemptedLogin.current = false;
       toast.error(error.message);
       setSubmitting(false);
     }
-    // Navigation will happen via the auth state check above
+    // Navigation will happen via the useEffect above
   };
 
   return (
