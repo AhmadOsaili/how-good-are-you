@@ -88,6 +88,7 @@ Deno.serve(async (req) => {
         Authorization: `Basic ${basicAuth}`,
         "Content-Type": "application/json",
         "User-Agent": "App",
+        "X-Forwarded-For": "0.0.0.0",
       },
       body: JSON.stringify(importBody),
     });
