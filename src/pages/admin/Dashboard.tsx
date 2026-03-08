@@ -37,6 +37,7 @@ export default function Dashboard() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [companies, setCompanies] = useState<Company[]>([]);
   const [filter, setFilter] = useState("all");
+  const [companyFilter, setCompanyFilter] = useState("all");
   const [loading, setLoading] = useState(true);
   const [assigningLead, setAssigningLead] = useState<Lead | null>(null);
   const [selectedCompany, setSelectedCompany] = useState("");
@@ -77,6 +78,12 @@ export default function Dashboard() {
   }
 
   useEffect(() => { fetchLeads(); }, [filter]);
+
+  const filteredLeads = companyFilter === "all"
+    ? leads
+    : companyFilter === "unassigned"
+      ? leads.filter(l => !l.assigned_company_id)
+      : leads.filter(l => l.assigned_company_id === companyFilter);
 
   async function updateStatus(id: string, status: "new" | "assigned" | "contacted" | "closed") {
     await supabase.from("leads").update({ status }).eq("id", id);
@@ -131,22 +138,34 @@ export default function Dashboard() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="font-display text-2xl font-bold">Leads</h1>
-        <Select value={filter} onValueChange={setFilter}>
-          <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Statuses</SelectItem>
-            <SelectItem value="new">New</SelectItem>
-            <SelectItem value="assigned">Assigned</SelectItem>
-            <SelectItem value="contacted">Contacted</SelectItem>
-            <SelectItem value="closed">Closed</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-2">
+          <Select value={companyFilter} onValueChange={setCompanyFilter}>
+            <SelectTrigger className="w-44"><SelectValue placeholder="All Companies" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Companies</SelectItem>
+              <SelectItem value="unassigned">Unassigned</SelectItem>
+              {companies.map(c => (
+                <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={filter} onValueChange={setFilter}>
+            <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Statuses</SelectItem>
+              <SelectItem value="new">New</SelectItem>
+              <SelectItem value="assigned">Assigned</SelectItem>
+              <SelectItem value="contacted">Contacted</SelectItem>
+              <SelectItem value="closed">Closed</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {loading ? (
         <div className="flex justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
-      ) : leads.length === 0 ? (
-        <p className="text-center text-muted-foreground py-12">No leads yet.</p>
+      ) : filteredLeads.length === 0 ? (
+        <p className="text-center text-muted-foreground py-12">No leads found.</p>
       ) : (
         <div className="rounded-lg border bg-card">
           <Table>
@@ -163,7 +182,7 @@ export default function Dashboard() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {leads.map(lead => (
+              {filteredLeads.map(lead => (
                 <TableRow key={lead.id}>
                   <TableCell className="font-medium">{lead.name}</TableCell>
                   <TableCell>
