@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,7 +10,7 @@ import { Shield, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function AdminLogin() {
-  const { user, isAdmin, loading: authLoading, signIn } = useAuth();
+  const { user, isAdmin, loading: authLoading, signIn, signOut } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,11 +18,21 @@ export default function AdminLogin() {
   const [loading, setLoading] = useState(false);
   const [resetMode, setResetMode] = useState(false);
   const [resetLoading, setResetLoading] = useState(false);
+  const attemptedLogin = useRef(false);
 
-  // Redirect when auth state confirms admin
-  if (!authLoading && user && isAdmin) {
-    navigate("/admin/dashboard", { replace: true });
-  }
+  useEffect(() => {
+    if (authLoading || !user) return;
+    if (isAdmin) {
+      navigate("/admin/dashboard", { replace: true });
+    } else if (attemptedLogin.current) {
+      // Logged in successfully but not an admin
+      attemptedLogin.current = false;
+      signOut();
+      setLoading(false);
+      setError("You don't have admin access.");
+      toast.error("You don't have admin access to this portal.");
+    }
+  }, [authLoading, user, isAdmin]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
