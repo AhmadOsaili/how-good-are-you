@@ -43,7 +43,35 @@ export default function Dashboard() {
   const [assigningLead, setAssigningLead] = useState<Lead | null>(null);
   const [selectedCompany, setSelectedCompany] = useState("");
   const [assigning, setAssigning] = useState(false);
+  const [hailReport, setHailReport] = useState<any>(null);
+  const [hailLoading, setHailLoading] = useState(false);
+  const [hailDialogOpen, setHailDialogOpen] = useState(false);
+  const [hailLeadName, setHailLeadName] = useState("");
   const { toast } = useToast();
+
+  async function fetchHailReport(lead: Lead) {
+    setHailLeadName(lead.name);
+    setHailReport(null);
+    setHailDialogOpen(true);
+    setHailLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("hail-report", {
+        body: { address: `${lead.address}, ${lead.zip_code}` },
+      });
+      if (error) throw error;
+      if (data?.error) {
+        toast({ title: "Hail Report Error", description: data.error, variant: "destructive" });
+        setHailDialogOpen(false);
+      } else {
+        setHailReport(data);
+      }
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message || "Failed to fetch hail report", variant: "destructive" });
+      setHailDialogOpen(false);
+    } finally {
+      setHailLoading(false);
+    }
+  }
 
   useEffect(() => {
     fetchLeads();
