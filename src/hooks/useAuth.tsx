@@ -9,33 +9,50 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let mounted = true;
+
+    const checkRoles = async (userId: string) => {
+      const { data } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", userId);
+      if (!mounted) return;
+      const roles = data?.map((r) => r.role) ?? [];
+      setIsAdmin(roles.includes("admin"));
+      setIsPartner(roles.includes("partner"));
+    };
+
+    // Get initial session first
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (!mounted) return;
+      const currentUser = session?.user ?? null;
+      setUser(currentUser);
+      if (currentUser) {
+        await checkRoles(currentUser.id);
+      }
+      if (mounted) setLoading(false);
+    });
+
+    // Then listen for changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
+        if (!mounted) return;
         const currentUser = session?.user ?? null;
         setUser(currentUser);
-
         if (currentUser) {
-          const { data } = await supabase
-            .from("user_roles")
-            .select("role")
-            .eq("user_id", currentUser.id);
-
-          const roles = data?.map((r) => r.role) ?? [];
-          setIsAdmin(roles.includes("admin"));
-          setIsPartner(roles.includes("partner"));
+          await checkRoles(currentUser.id);
         } else {
           setIsAdmin(false);
           setIsPartner(false);
         }
-        setLoading(false);
+        if (mounted) setLoading(false);
       }
     );
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signIn = (email: string, password: string) =>
