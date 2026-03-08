@@ -50,8 +50,23 @@ export default function Dashboard() {
     setLoading(true);
     let query = supabase.from("leads").select("*").order("created_at", { ascending: false });
     if (filter !== "all") query = query.eq("status", filter as "new" | "assigned" | "contacted" | "closed");
-    const { data } = await query;
-    setLeads((data as Lead[]) || []);
+    const { data: leadsData } = await query;
+    const leads = (leadsData as Lead[]) || [];
+
+    // Fetch assignments with company names
+    const { data: assignments } = await supabase
+      .from("lead_assignments")
+      .select("lead_id, company_id, companies(name)");
+
+    const assignmentMap = new Map<string, string>();
+    if (assignments) {
+      for (const a of assignments as any[]) {
+        const companyName = a.companies?.name;
+        if (companyName) assignmentMap.set(a.lead_id, companyName);
+      }
+    }
+
+    setLeads(leads.map(l => ({ ...l, assigned_company: assignmentMap.get(l.id) })));
     setLoading(false);
   }
 
