@@ -10,7 +10,7 @@ import { Shield, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function AdminLogin() {
-  const { user, isAdmin, loading: authLoading, signIn, signOut } = useAuth();
+  const { user, isAdmin, loading: authLoading, rolesChecked, signIn, signOut } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -21,18 +21,17 @@ export default function AdminLogin() {
   const attemptedLogin = useRef(false);
 
   useEffect(() => {
-    if (authLoading || !user) return;
+    if (authLoading || !user || !rolesChecked) return;
     if (isAdmin) {
       navigate("/admin/dashboard", { replace: true });
     } else if (attemptedLogin.current) {
-      // Logged in successfully but not an admin
       attemptedLogin.current = false;
       signOut();
       setLoading(false);
       setError("You don't have admin access.");
       toast.error("You don't have admin access to this portal.");
     }
-  }, [authLoading, user, isAdmin]);
+  }, [authLoading, user, isAdmin, rolesChecked]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
