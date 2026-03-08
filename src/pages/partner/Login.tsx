@@ -14,7 +14,12 @@ export default function PartnerLogin() {
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  if (!loading && user && isPartner) return <Navigate to="/partner/leads" replace />;
+  const navigate = useNavigate();
+
+  // Redirect when auth state confirms partner role
+  if (!loading && user && isPartner) {
+    navigate("/partner/leads", { replace: true });
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,8 +27,9 @@ export default function PartnerLogin() {
     const { error } = await signIn(email, password);
     if (error) {
       toast.error(error.message);
+      setSubmitting(false);
     }
-    setSubmitting(false);
+    // Navigation will happen via the auth state check above
   };
 
   return (
