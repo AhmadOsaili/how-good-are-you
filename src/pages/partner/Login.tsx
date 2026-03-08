@@ -35,11 +35,13 @@ export default function PartnerLogin() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setSubmitting(true);
     attemptedLogin.current = true;
-    const { error } = await signIn(email, password);
-    if (error) {
+    const { error: err } = await signIn(email, password);
+    if (err) {
       attemptedLogin.current = false;
-      toast.error(error.message);
+      setError("Invalid credentials");
+      toast.error(err.message);
       setSubmitting(false);
     }
     // Navigation will happen via the useEffect above
