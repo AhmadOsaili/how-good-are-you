@@ -9,6 +9,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 const NAV = [
   { to: "/admin/dashboard", label: "Leads", icon: Users },
   { to: "/admin/companies", label: "Companies", icon: Building2 },
+  { to: "/", label: "Homepage", icon: Shield },
+  { to: "/partner/login", label: "Partner Portal", icon: Users },
 ];
 
 export default function AdminLayout() {

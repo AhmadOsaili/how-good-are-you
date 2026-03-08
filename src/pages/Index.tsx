@@ -15,10 +15,10 @@ export default function Index() {
       {/* Nav */}
       <nav className="border-b bg-card/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container flex items-center justify-between h-16 px-4">
-          <div className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2">
             <Shield className="h-7 w-7 text-primary" />
             <span className="font-display text-xl font-bold text-foreground">RoofRight</span>
-          </div>
+          </Link>
           <div className="flex items-center gap-4">
             <Link to="/partner/login" className="text-sm font-medium text-primary hover:text-primary/80 transition-colors">
               Partner Login
