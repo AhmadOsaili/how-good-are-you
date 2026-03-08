@@ -16,6 +16,8 @@ type Lead = {
   email: string;
   phone: string;
   address: string;
+  city: string;
+  state: string;
   zip_code: string;
   roof_age: string;
   concerns: string | null;
