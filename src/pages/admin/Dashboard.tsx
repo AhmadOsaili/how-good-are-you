@@ -125,6 +125,7 @@ export default function Dashboard() {
                 <TableHead>ZIP</TableHead>
                 <TableHead>Roof Age</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Assigned To</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
