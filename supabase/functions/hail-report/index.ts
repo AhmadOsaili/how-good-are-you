@@ -120,6 +120,7 @@ Deno.serve(async (req) => {
       headers: {
         Authorization: `Basic ${basicAuth}`,
         "User-Agent": "App",
+        "X-Forwarded-For": "0.0.0.0",
       },
     });
 
