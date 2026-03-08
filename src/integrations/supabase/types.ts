@@ -53,7 +53,7 @@ export type Database = {
       company_users: {
         Row: {
           company_id: string
-          company_role: string
+          company_role: Database["public"]["Enums"]["company_role"]
           created_at: string
           email: string | null
           id: string
@@ -61,7 +61,7 @@ export type Database = {
         }
         Insert: {
           company_id: string
-          company_role?: string
+          company_role?: Database["public"]["Enums"]["company_role"]
           created_at?: string
           email?: string | null
           id?: string
@@ -69,7 +69,7 @@ export type Database = {
         }
         Update: {
           company_id?: string
-          company_role?: string
+          company_role?: Database["public"]["Enums"]["company_role"]
           created_at?: string
           email?: string | null
           id?: string
@@ -207,6 +207,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "partner" | "partner_member"
+      company_role: "company_admin" | "member"
       lead_status:
         | "new"
         | "assigned"
@@ -343,6 +344,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "partner", "partner_member"],
+      company_role: ["company_admin", "member"],
       lead_status: [
         "new",
         "assigned",
