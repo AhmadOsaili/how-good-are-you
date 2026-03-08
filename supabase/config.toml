@@ -1,1 +1,4 @@
 project_id = "dsmndlilrykwnshhsszz"
+
+[functions.send-assignment-email]
+verify_jwt = false
