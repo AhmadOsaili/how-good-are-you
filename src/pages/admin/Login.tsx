@@ -42,6 +42,7 @@ export default function AdminLogin() {
       return;
     }
     setLoading(true);
+    attemptedLogin.current = true;
     const { error: err } = await signIn(email, password);
     if (err) {
       attemptedLogin.current = false;

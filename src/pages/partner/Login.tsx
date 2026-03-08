@@ -41,6 +41,7 @@ export default function PartnerLogin() {
       return;
     }
     setSubmitting(true);
+    attemptedLogin.current = true;
     const { error: err } = await signIn(email, password);
     if (err) {
       attemptedLogin.current = false;
