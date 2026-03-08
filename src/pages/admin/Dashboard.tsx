@@ -110,6 +110,23 @@ export default function Dashboard() {
     setSelectedCompany("");
   }
 
+  async function resendNotification(lead: Lead, notify: "both" | "company" | "lead") {
+    if (!lead.assigned_company_id) {
+      toast({ title: "Not assigned", description: "This lead hasn't been assigned to a company yet.", variant: "destructive" });
+      return;
+    }
+    const labels = { both: "company & homeowner", company: "company", lead: "homeowner" };
+    toast({ title: "Sending…", description: `Resending notification to ${labels[notify]}.` });
+    const { error } = await supabase.functions.invoke("send-assignment-email", {
+      body: { lead_id: lead.id, company_id: lead.assigned_company_id, notify },
+    });
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Sent!", description: `Notification resent to ${labels[notify]}.` });
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
