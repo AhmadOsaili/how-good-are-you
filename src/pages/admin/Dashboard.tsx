@@ -21,6 +21,7 @@ type Lead = {
   status: string;
   created_at: string;
   assigned_company?: string;
+  assigned_company_id?: string;
 };
 
 type Company = { id: string; name: string };
