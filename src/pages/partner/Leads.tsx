@@ -27,6 +27,8 @@ interface AssignedLead {
     email: string;
     phone: string;
     address: string;
+    city: string;
+    state: string;
     zip_code: string;
     roof_age: string;
     concerns: string | null;
@@ -62,7 +64,7 @@ export default function PartnerLeads() {
 
     const { data, error } = await supabase
       .from("lead_assignments")
-      .select("id, lead_id, assigned_at, lead:leads(id, name, email, phone, address, zip_code, roof_age, concerns, status, created_at)")
+      .select("id, lead_id, assigned_at, lead:leads(id, name, email, phone, address, city, state, zip_code, roof_age, concerns, status, created_at)")
       .order("assigned_at", { ascending: false });
 
     if (error) {
@@ -156,9 +158,9 @@ export default function PartnerLeads() {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <div className="flex items-center gap-1.5 text-sm">
-                      <MapPin className="h-3 w-3 text-muted-foreground" />
-                      {a.lead.address}, {a.lead.zip_code}
+                    <div className="flex items-start gap-1.5 text-sm">
+                      <MapPin className="h-3 w-3 text-muted-foreground mt-0.5 shrink-0" />
+                      <span>{a.lead.address}<br />{a.lead.city}, {a.lead.state} {a.lead.zip_code}</span>
                     </div>
                   </TableCell>
                   <TableCell>{a.lead.roof_age}</TableCell>
