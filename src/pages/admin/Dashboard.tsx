@@ -19,6 +19,7 @@ type Lead = {
   concerns: string | null;
   status: string;
   created_at: string;
+  assigned_company?: string;
 };
 
 type Company = { id: string; name: string };
