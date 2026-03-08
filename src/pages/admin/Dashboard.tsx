@@ -37,6 +37,7 @@ export default function Dashboard() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [companies, setCompanies] = useState<Company[]>([]);
   const [filter, setFilter] = useState("all");
+  const [companyFilter, setCompanyFilter] = useState("all");
   const [loading, setLoading] = useState(true);
   const [assigningLead, setAssigningLead] = useState<Lead | null>(null);
   const [selectedCompany, setSelectedCompany] = useState("");
