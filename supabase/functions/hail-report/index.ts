@@ -45,6 +45,11 @@ Deno.serve(async (req) => {
     });
   }
 
+  // Diagnostic: log credential lengths (not values)
+  console.log("IHM_ACCESS_KEY length:", ihmAccessKey.length);
+  console.log("IHM_ACCESS_SECRET length:", ihmAccessSecret.length);
+  console.log("IHM_ACCESS_KEY first 4 chars:", ihmAccessKey.substring(0, 4));
+
   try {
     const { street, city, state, zip } = await req.json();
     if (!street || !zip) {
@@ -55,6 +60,7 @@ Deno.serve(async (req) => {
     }
 
     const basicAuth = btoa(`${ihmAccessKey}:${ihmAccessSecret}`);
+    console.log("Basic auth token length:", basicAuth.length);
 
     // Step 1: Create/update address marker via AddressMonitoringImport2g
     const importUrl = `${IHM_BASE}/AddressMonitoringImport2g`;
@@ -63,46 +69,47 @@ Deno.serve(async (req) => {
       city: city || "",
       state: state || "",
       zip,
-      customer_name: null,
-      customer_phone: null,
-      customer_mobile: null,
-      customer_email: null,
-      comment1: null,
-      comment2: null,
-      comment3: null,
-      address_monitoring_size: 0,
-      status: null,
-      salesman_email: null,
-      AddressMarker_id: null,
-      external_key: null,
-      integration_partner: 2,
-      latitude: null,
-      longitude: null,
     };
 
     console.log("Calling AddressMonitoringImport2g with:", JSON.stringify(importBody));
+    console.log("URL:", importUrl);
 
     const importRes = await fetch(importUrl, {
       method: "POST",
       headers: {
-        Authorization: `Basic ${basicAuth}`,
+        "Authorization": `Basic ${basicAuth}`,
         "Content-Type": "application/json",
-        "User-Agent": "App",
-        "X-Forwarded-For": "0.0.0.0",
       },
       body: JSON.stringify(importBody),
     });
 
+    console.log("IHM response status:", importRes.status);
+    console.log("IHM response headers:", JSON.stringify(Object.fromEntries(importRes.headers.entries())));
+
+    const responseText = await importRes.text();
+    console.log("IHM response body (first 500 chars):", responseText.substring(0, 500));
+
     if (!importRes.ok) {
-      const errText = await importRes.text();
-      console.error("IHM import error:", importRes.status, errText);
       return new Response(
-        JSON.stringify({ error: "Failed to create address marker", details: errText }),
+        JSON.stringify({ 
+          error: "Failed to create address marker", 
+          status: importRes.status,
+          details: responseText.substring(0, 200),
+        }),
         { status: importRes.status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const importData = await importRes.json();
+    let importData;
+    try {
+      importData = JSON.parse(responseText);
+    } catch {
+      return new Response(
+        JSON.stringify({ error: "Invalid JSON response from IHM", details: responseText.substring(0, 200) }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     console.log("AddressMonitoringImport2g response:", JSON.stringify(importData));
 
     if (!importData.success || !importData.AddressMarker_id) {
@@ -116,19 +123,19 @@ Deno.serve(async (req) => {
 
     // Step 2: Get hail impact history using the marker ID
     const hailUrl = `${IHM_BASE}/ImpactDatesForAddressMarker?AddressMarker_id=${markerId}&Months=60`;
+    console.log("Fetching hail history from:", hailUrl);
+
     const hailRes = await fetch(hailUrl, {
       headers: {
-        Authorization: `Basic ${basicAuth}`,
-        "User-Agent": "App",
-        "X-Forwarded-For": "0.0.0.0",
+        "Authorization": `Basic ${basicAuth}`,
       },
     });
 
     if (!hailRes.ok) {
       const errText = await hailRes.text();
-      console.error("IHM hail history error:", hailRes.status, errText);
+      console.error("IHM hail history error:", hailRes.status, errText.substring(0, 500));
       return new Response(
-        JSON.stringify({ error: "Failed to fetch hail history", details: errText }),
+        JSON.stringify({ error: "Failed to fetch hail history", details: errText.substring(0, 200) }),
         { status: hailRes.status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
