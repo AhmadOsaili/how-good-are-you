@@ -63,7 +63,7 @@ Deno.serve(async (req) => {
     const emails: Promise<Response>[] = [];
 
     // Email to the company (if they have an email)
-    if (company.email) {
+    if (company.email && (notify === "both" || notify === "company")) {
       emails.push(
         fetch("https://api.resend.com/emails", {
           method: "POST",
