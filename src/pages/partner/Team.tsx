@@ -37,13 +37,11 @@ export default function Team() {
 
   async function fetchMembers() {
     setLoading(true);
-    const { data } = await supabase
-      .from("company_users" as any)
+    const { data } = await (supabase as any)
+      .from("company_users")
       .select("id, user_id, company_role, created_at")
       .eq("company_id", partnerInfo!.companyId);
 
-    // We can't query auth.users, so we'll show user_id. 
-    // In a production app you'd have a profiles table.
     setMembers((data as TeamMember[]) || []);
     setLoading(false);
   }
