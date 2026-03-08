@@ -216,9 +216,6 @@ export default function Dashboard() {
                      {new Date(lead.created_at).toLocaleDateString()}
                    </TableCell>
                   <TableCell className="text-right space-x-1">
-                    <Button size="sm" variant="ghost" onClick={() => fetchHailReport(lead)}>
-                      <CloudRain className="h-3.5 w-3.5 mr-1" /> Hail
-                    </Button>
                     {lead.assigned_company_id && (
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
