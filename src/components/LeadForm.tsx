@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { AddressAutocomplete } from "@/components/AddressAutocomplete";
 
 export function LeadForm() {
   const navigate = useNavigate();
@@ -60,7 +61,16 @@ export function LeadForm() {
         <FormField control={form.control} name="address" render={({ field }) => (
           <FormItem>
             <FormLabel>Street Address</FormLabel>
-            <FormControl><Input placeholder="123 Main St, City, State" {...field} /></FormControl>
+            <FormControl>
+              <AddressAutocomplete
+                value={field.value}
+                onChange={field.onChange}
+                onAddressSelect={(details) => {
+                  if (details.street) field.onChange(details.street);
+                  if (details.zip) form.setValue("zip_code", details.zip);
+                }}
+              />
+            </FormControl>
             <FormMessage />
           </FormItem>
         )} />
