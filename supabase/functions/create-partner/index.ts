@@ -92,21 +92,20 @@ Deno.serve(async (req) => {
     // Assign partner role
     const { error: roleError } = await adminClient
       .from("user_roles")
-      .upsert({ user_id: userId, role: "partner" }, { onConflict: "user_id,role" });
+      .upsert({ user_id: userId, role: "partner", email }, { onConflict: "user_id,role" });
     if (roleError) throw roleError;
 
     // Link user to company
     const { error: linkError } = await adminClient
       .from("company_users")
       .upsert(
-        { user_id: userId, company_id, company_role: "member" },
+        { user_id: userId, company_id, company_role: "member", email },
         { onConflict: "user_id,company_id" }
       );
     if (linkError) {
-      // If upsert fails due to no unique constraint, try insert
       const { error: insertError } = await adminClient
         .from("company_users")
-        .insert({ user_id: userId, company_id, company_role: "member" });
+        .insert({ user_id: userId, company_id, company_role: "member", email });
       if (insertError) throw insertError;
     }
 
