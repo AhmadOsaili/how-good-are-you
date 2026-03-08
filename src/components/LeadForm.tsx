@@ -69,6 +69,8 @@ export function LeadForm() {
                 onChange={field.onChange}
                 onAddressSelect={(details) => {
                   if (details.street) field.onChange(details.street);
+                  if (details.city) form.setValue("city", details.city);
+                  if (details.state) form.setValue("state", details.state);
                   if (details.zip) form.setValue("zip_code", details.zip);
                 }}
               />
