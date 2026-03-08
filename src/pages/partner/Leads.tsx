@@ -172,42 +172,33 @@ export default function PartnerLeads() {
                     </div>
                   </TableCell>
                   <TableCell>
-                    {isPartnerMember ? (
-                      <Badge
-                        variant="secondary"
-                        className={STATUS_COLORS[a.lead.status]}
-                      >
-                        {a.lead.status.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
-                      </Badge>
-                    ) : (
-                      <Select
-                        value={a.lead.status}
-                        onValueChange={(val) => updateStatus(a.lead.id, val as LeadStatus)}
-                      >
-                        <SelectTrigger className="w-[150px]">
-                          <SelectValue>
+                    <Select
+                      value={a.lead.status}
+                      onValueChange={(val) => updateStatus(a.lead.id, val as LeadStatus)}
+                    >
+                      <SelectTrigger className="w-[150px]">
+                        <SelectValue>
+                          <Badge
+                            variant="secondary"
+                            className={STATUS_COLORS[a.lead.status]}
+                          >
+                            {a.lead.status.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+                          </Badge>
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        {PARTNER_STATUSES.map((s) => (
+                          <SelectItem key={s.value} value={s.value}>
                             <Badge
                               variant="secondary"
-                              className={STATUS_COLORS[a.lead.status]}
+                              className={STATUS_COLORS[s.value]}
                             >
-                              {a.lead.status.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+                              {s.label}
                             </Badge>
-                          </SelectValue>
-                        </SelectTrigger>
-                        <SelectContent>
-                          {PARTNER_STATUSES.map((s) => (
-                            <SelectItem key={s.value} value={s.value}>
-                              <Badge
-                                variant="secondary"
-                                className={STATUS_COLORS[s.value]}
-                              >
-                                {s.label}
-                              </Badge>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </TableCell>
                 </TableRow>
               ))}
