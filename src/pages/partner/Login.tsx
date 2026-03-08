@@ -20,7 +20,7 @@ export default function PartnerLogin() {
 
   useEffect(() => {
     if (loading || !user || !rolesChecked) return;
-    if (isPartner) {
+    if (isPartner || isPartnerMember) {
       navigate("/partner/leads", { replace: true });
     } else if (attemptedLogin.current) {
       attemptedLogin.current = false;
