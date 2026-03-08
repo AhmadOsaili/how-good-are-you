@@ -13,7 +13,6 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  // Verify caller is authenticated
   const authHeader = req.headers.get("Authorization");
   if (!authHeader?.startsWith("Bearer ")) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
@@ -38,15 +37,23 @@ Deno.serve(async (req) => {
 
   const ihmAccessKey = Deno.env.get("IHM_ACCESS_KEY");
   const ihmAccessSecret = Deno.env.get("IHM_ACCESS_SECRET");
+  const googleApiKey = Deno.env.get("GOOGLE_PLACES_API_KEY");
+
   if (!ihmAccessKey || !ihmAccessSecret) {
     return new Response(JSON.stringify({ error: "IHM credentials not configured" }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
+  if (!googleApiKey) {
+    return new Response(JSON.stringify({ error: "Google API key not configured" }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
 
   try {
-    const { street, city, state, zip } = await req.json();
+    const { street, zip } = await req.json();
     if (!street || !zip) {
       return new Response(JSON.stringify({ error: "street and zip are required" }), {
         status: 400,
@@ -54,59 +61,25 @@ Deno.serve(async (req) => {
       });
     }
 
+    const fullAddress = `${street}, ${zip}`;
+
+    // Step 1: Geocode with Google to get lat/lng
+    const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(fullAddress)}&key=${googleApiKey}`;
+    const geocodeRes = await fetch(geocodeUrl);
+    const geocodeData = await geocodeRes.json();
+
+    if (!geocodeData.results || geocodeData.results.length === 0) {
+      return new Response(
+        JSON.stringify({ error: "Could not geocode address" }),
+        { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const { lat, lng } = geocodeData.results[0].geometry.location;
+
+    // Step 2: Get hail impact history from IHM using lat/lng
     const basicAuth = btoa(`${ihmAccessKey}:${ihmAccessSecret}`);
-
-    // Step 1: Create/update address marker to get AddressMarker_id
-    const markerRes = await fetch(`${IHM_BASE}/AddressMonitoringImport2g`, {
-      method: "POST",
-      headers: {
-        Authorization: `Basic ${basicAuth}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        street,
-        city: city || "",
-        state: state || "TX",
-        zip,
-        customer_name: "",
-        customer_phone: "",
-        customer_mobile: "",
-        customer_email: "",
-        comment1: "",
-        comment2: "",
-        comment3: "",
-        address_monitoring_size: 0,
-        status: "Monitoring",
-        salesman_email: "",
-        AddressMarker_id: "",
-        external_key: "",
-        integration_partner: 2,
-        latitude: "",
-        longitude: "",
-      }),
-    });
-
-    if (!markerRes.ok) {
-      const errText = await markerRes.text();
-      console.error("IHM marker error:", markerRes.status, errText);
-      return new Response(
-        JSON.stringify({ error: "Failed to create address marker", details: errText }),
-        { status: markerRes.status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    const markerData = await markerRes.json();
-    if (!markerData.success || !markerData.AddressMarker_id) {
-      return new Response(
-        JSON.stringify({ error: "Failed to create address marker", details: markerData }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    const markerId = markerData.AddressMarker_id;
-
-    // Step 2: Get hail impact history for the marker (last 60 months)
-    const hailUrl = `${IHM_BASE}/ImpactDatesForAddressMarker?AddressMarker_id=${markerId}&Months=60`;
+    const hailUrl = `${IHM_BASE}/ImpactDatesForLatLong?Lat=${lat}&Long=${lng}&Months=60`;
     const hailRes = await fetch(hailUrl, {
       headers: { Authorization: `Basic ${basicAuth}` },
     });
@@ -125,8 +98,9 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({
         success: true,
-        address: `${street}, ${city || ""} ${state || ""} ${zip}`.trim(),
-        marker_id: markerId,
+        address: fullAddress,
+        lat,
+        lng,
         hail_data: hailData,
       }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
