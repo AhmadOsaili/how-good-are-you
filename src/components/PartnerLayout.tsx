@@ -25,7 +25,7 @@ export default function PartnerLayout() {
       </div>
     );
 
-  if (!user || !isPartner) return <Navigate to="/partner/login" replace />;
+  if (!user || (!isPartner && !isPartnerMember)) return <Navigate to="/partner/login" replace />;
 
   return (
     <SidebarProvider>

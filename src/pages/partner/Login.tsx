@@ -30,7 +30,7 @@ export default function PartnerLogin() {
       toast.error("You don't have partner access to this portal.");
       toast.error("You don't have partner access to this portal.");
     }
-  }, [loading, user, isPartner, rolesChecked]);
+  }, [loading, user, isPartner, isPartnerMember, rolesChecked]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

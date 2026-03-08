@@ -69,5 +69,5 @@ export function useAuth() {
 
   const signOut = () => supabase.auth.signOut();
 
-  return { user, isAdmin, isPartner, loading, rolesChecked, signIn, signOut };
+  return { user, isAdmin, isPartner, isPartnerMember, loading, rolesChecked, signIn, signOut };
 }
