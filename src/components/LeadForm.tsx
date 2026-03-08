@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { AddressAutocomplete } from "@/components/AddressAutocomplete";
 
 export function LeadForm() {
   const navigate = useNavigate();
