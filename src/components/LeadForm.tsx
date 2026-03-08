@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
-import { leadFormSchema, LeadFormValues, ROOF_AGE_OPTIONS } from "@/lib/validations";
+import { leadFormSchema, LeadFormValues, ROOF_AGE_OPTIONS, US_STATES } from "@/lib/validations";
 import { supabase } from "@/integrations/supabase/client";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -17,7 +17,7 @@ export function LeadForm() {
   const [submitting, setSubmitting] = useState(false);
   const form = useForm<LeadFormValues>({
     resolver: zodResolver(leadFormSchema),
-    defaultValues: { name: "", address: "", zip_code: "", phone: "", email: "", roof_age: "", concerns: "" },
+    defaultValues: { name: "", address: "", city: "", state: "", zip_code: "", phone: "", email: "", roof_age: "", concerns: "" },
   });
 
   async function onSubmit(values: LeadFormValues) {
@@ -25,6 +25,8 @@ export function LeadForm() {
     const { error } = await supabase.from("leads").insert({
       name: values.name,
       address: values.address,
+      city: values.city,
+      state: values.state,
       zip_code: values.zip_code,
       phone: values.phone,
       email: values.email,
@@ -67,6 +69,8 @@ export function LeadForm() {
                 onChange={field.onChange}
                 onAddressSelect={(details) => {
                   if (details.street) field.onChange(details.street);
+                  if (details.city) form.setValue("city", details.city);
+                  if (details.state) form.setValue("state", details.state);
                   if (details.zip) form.setValue("zip_code", details.zip);
                 }}
               />
@@ -74,7 +78,30 @@ export function LeadForm() {
             <FormMessage />
           </FormItem>
         )} />
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+          <FormField control={form.control} name="city" render={({ field }) => (
+            <FormItem>
+              <FormLabel>City</FormLabel>
+              <FormControl><Input placeholder="Dallas" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="state" render={({ field }) => (
+            <FormItem>
+              <FormLabel>State</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger><SelectValue placeholder="Select state" /></SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {US_STATES.map(s => (
+                    <SelectItem key={s} value={s}>{s}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )} />
           <FormField control={form.control} name="zip_code" render={({ field }) => (
             <FormItem>
               <FormLabel>ZIP Code</FormLabel>
@@ -89,6 +116,8 @@ export function LeadForm() {
               <FormMessage />
             </FormItem>
           )} />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-1 gap-4">
           <FormField control={form.control} name="roof_age" render={({ field }) => (
             <FormItem>
               <FormLabel>Roof Age</FormLabel>

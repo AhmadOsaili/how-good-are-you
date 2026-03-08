@@ -16,6 +16,8 @@ type Lead = {
   email: string;
   phone: string;
   address: string;
+  city: string;
+  state: string;
   zip_code: string;
   roof_age: string;
   concerns: string | null;
@@ -56,7 +58,7 @@ export default function Dashboard() {
     setHailLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("hail-report", {
-        body: { street: lead.address, zip: lead.zip_code },
+        body: { street: lead.address, city: lead.city, state: lead.state, zip: lead.zip_code },
       });
       if (error) throw error;
       if (data?.error) {

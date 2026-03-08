@@ -1,8 +1,16 @@
 import { z } from "zod";
 
+export const US_STATES = [
+  "AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD",
+  "MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC",
+  "SD","TN","TX","UT","VT","VA","WA","WV","WI","WY","DC",
+];
+
 export const leadFormSchema = z.object({
   name: z.string().trim().min(2, "Name must be at least 2 characters").max(100),
   address: z.string().trim().min(5, "Please enter a valid address").max(200),
+  city: z.string().trim().min(1, "City is required").max(100),
+  state: z.string().min(1, "Please select your state"),
   zip_code: z.string().trim().regex(/^\d{5}(-\d{4})?$/, "Please enter a valid ZIP code"),
   phone: z.string().trim().regex(/^[\d\s\-\(\)\+]{7,20}$/, "Please enter a valid phone number"),
   email: z.string().trim().email("Please enter a valid email").max(255),
