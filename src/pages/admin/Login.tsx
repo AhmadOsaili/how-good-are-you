@@ -10,7 +10,7 @@ import { Shield, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function AdminLogin() {
-  const { signIn } = useAuth();
+  const { user, isAdmin, loading: authLoading, signIn } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,6 +18,11 @@ export default function AdminLogin() {
   const [loading, setLoading] = useState(false);
   const [resetMode, setResetMode] = useState(false);
   const [resetLoading, setResetLoading] = useState(false);
+
+  // Redirect when auth state confirms admin
+  if (!authLoading && user && isAdmin) {
+    navigate("/admin/dashboard", { replace: true });
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -29,7 +34,7 @@ export default function AdminLogin() {
       setError("Invalid credentials");
       return;
     }
-    navigate("/admin/dashboard");
+    // Navigation will happen via the auth state check above
   }
 
   async function handleResetPassword(e: React.FormEvent) {
