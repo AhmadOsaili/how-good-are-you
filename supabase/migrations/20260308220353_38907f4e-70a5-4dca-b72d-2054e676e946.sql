@@ -1,0 +1,2 @@
+INSERT INTO public.company_users (company_id, user_id, company_role, email)
+VALUES ('3323ebd7-183a-4e2d-950c-71fcd27dddd0', '19bef0c3-e518-4b0a-bc16-f392fcfedb04', 'company_admin', 'ahmad.osaili@goodfaithenergy.com');
