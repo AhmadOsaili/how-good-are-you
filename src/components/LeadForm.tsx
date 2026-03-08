@@ -35,7 +35,10 @@ export function LeadForm() {
     });
     setSubmitting(false);
     if (error) {
-      form.setError("root", { message: "Something went wrong. Please try again." });
+      const msg = error.code === "23505"
+        ? "A request with this email already exists. Please use a different email."
+        : "Something went wrong. Please try again.";
+      form.setError("root", { message: msg });
       return;
     }
     navigate("/thank-you");
