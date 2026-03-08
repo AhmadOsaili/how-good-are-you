@@ -60,15 +60,19 @@ export default function Dashboard() {
       .from("lead_assignments")
       .select("lead_id, company_id, companies(name)");
 
-    const assignmentMap = new Map<string, string>();
+    const assignmentMap = new Map<string, { name: string; id: string }>();
     if (assignments) {
       for (const a of assignments as any[]) {
         const companyName = a.companies?.name;
-        if (companyName) assignmentMap.set(a.lead_id, companyName);
+        if (companyName) assignmentMap.set(a.lead_id, { name: companyName, id: a.company_id });
       }
     }
 
-    setLeads(leads.map(l => ({ ...l, assigned_company: assignmentMap.get(l.id) })));
+    setLeads(leads.map(l => ({
+      ...l,
+      assigned_company: assignmentMap.get(l.id)?.name,
+      assigned_company_id: assignmentMap.get(l.id)?.id,
+    })));
     setLoading(false);
   }
 
