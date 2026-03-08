@@ -23,6 +23,7 @@ export function useAuth() {
       const roles = data?.map((r) => r.role) ?? [];
       setIsAdmin(roles.includes("admin"));
       setIsPartner(roles.includes("partner"));
+      setIsPartnerMember(roles.includes("partner_member"));
       setRolesChecked(true);
     };
 
