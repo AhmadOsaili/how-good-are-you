@@ -36,7 +36,7 @@ export function LeadForm() {
     setSubmitting(false);
     if (error) {
       const msg = error.code === "23505"
-        ? "A request with this email already exists. Please use a different email."
+        ? "A request for this email and address already exists. If you have a different property, please use a different address."
         : "Something went wrong. Please try again.";
       form.setError("root", { message: msg });
       return;
