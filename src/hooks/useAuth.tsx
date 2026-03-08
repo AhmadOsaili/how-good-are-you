@@ -51,6 +51,7 @@ export function useAuth() {
         } else {
           setIsAdmin(false);
           setIsPartner(false);
+          setIsPartnerMember(false);
           setRolesChecked(true);
         }
         if (mounted) setLoading(false);
