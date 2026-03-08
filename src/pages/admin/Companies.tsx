@@ -129,12 +129,20 @@ export default function Companies() {
 
     if (editing) {
       const { error } = await supabase.from("companies").update(payload).eq("id", editing.id);
-      if (error) toast({ title: "Error", description: error.message, variant: "destructive" });
-      else toast({ title: "Updated" });
+      if (error) {
+        const msg = error.message?.includes("duplicate") || error.code === "23505"
+          ? "A company with this email already exists."
+          : "Something went wrong. Please try again.";
+        toast({ title: "Error", description: msg, variant: "destructive" });
+      } else toast({ title: "Updated" });
     } else {
       const { error } = await supabase.from("companies").insert(payload);
-      if (error) toast({ title: "Error", description: error.message, variant: "destructive" });
-      else toast({ title: "Company added" });
+      if (error) {
+        const msg = error.message?.includes("duplicate") || error.code === "23505"
+          ? "A company with this email already exists."
+          : "Something went wrong. Please try again.";
+        toast({ title: "Error", description: msg, variant: "destructive" });
+      } else toast({ title: "Company added" });
     }
     setSaving(false);
     setDialogOpen(false);
