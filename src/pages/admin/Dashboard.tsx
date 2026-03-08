@@ -64,7 +64,7 @@ export default function Dashboard() {
   async function fetchLeads() {
     setLoading(true);
     let query = supabase.from("leads").select("*").order("created_at", { ascending: false });
-    if (filter !== "all") query = query.eq("status", filter as "new" | "assigned" | "contacted" | "closed");
+    if (filter !== "all") query = query.eq("status", filter as any);
     const { data: leadsData } = await query;
     const leads = (leadsData as Lead[]) || [];
 
