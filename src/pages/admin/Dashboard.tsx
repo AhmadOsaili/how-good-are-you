@@ -19,6 +19,7 @@ type Lead = {
   concerns: string | null;
   status: string;
   created_at: string;
+  assigned_company?: string;
 };
 
 type Company = { id: string; name: string };
@@ -49,8 +50,23 @@ export default function Dashboard() {
     setLoading(true);
     let query = supabase.from("leads").select("*").order("created_at", { ascending: false });
     if (filter !== "all") query = query.eq("status", filter as "new" | "assigned" | "contacted" | "closed");
-    const { data } = await query;
-    setLeads((data as Lead[]) || []);
+    const { data: leadsData } = await query;
+    const leads = (leadsData as Lead[]) || [];
+
+    // Fetch assignments with company names
+    const { data: assignments } = await supabase
+      .from("lead_assignments")
+      .select("lead_id, company_id, companies(name)");
+
+    const assignmentMap = new Map<string, string>();
+    if (assignments) {
+      for (const a of assignments as any[]) {
+        const companyName = a.companies?.name;
+        if (companyName) assignmentMap.set(a.lead_id, companyName);
+      }
+    }
+
+    setLeads(leads.map(l => ({ ...l, assigned_company: assignmentMap.get(l.id) })));
     setLoading(false);
   }
 
@@ -72,7 +88,8 @@ export default function Dashboard() {
       toast({ title: "Error", description: error.message, variant: "destructive" });
     } else {
       toast({ title: "Assigned!", description: "Lead assigned to company successfully." });
-      if (assigningLead.status === "new") updateStatus(assigningLead.id, "assigned");
+      if (assigningLead.status === "new") await updateStatus(assigningLead.id, "assigned");
+      fetchLeads();
     }
     setAssigning(false);
     setAssigningLead(null);
@@ -109,6 +126,7 @@ export default function Dashboard() {
                 <TableHead>ZIP</TableHead>
                 <TableHead>Roof Age</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Assigned To</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
@@ -134,10 +152,17 @@ export default function Dashboard() {
                         ))}
                       </SelectContent>
                     </Select>
-                  </TableCell>
-                  <TableCell className="text-sm text-muted-foreground">
-                    {new Date(lead.created_at).toLocaleDateString()}
-                  </TableCell>
+                   </TableCell>
+                   <TableCell>
+                     {lead.assigned_company ? (
+                       <Badge className="bg-primary/80 text-primary-foreground text-xs">{lead.assigned_company}</Badge>
+                     ) : (
+                       <span className="text-xs text-muted-foreground">—</span>
+                     )}
+                   </TableCell>
+                   <TableCell className="text-sm text-muted-foreground">
+                     {new Date(lead.created_at).toLocaleDateString()}
+                   </TableCell>
                   <TableCell className="text-right">
                     <Dialog>
                       <DialogTrigger asChild>
