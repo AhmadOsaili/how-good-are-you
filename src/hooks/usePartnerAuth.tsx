@@ -35,8 +35,8 @@ export function usePartnerAuth() {
 
           if (hasPartnerRole) {
             // Get company info
-            const { data: companyUser } = await supabase
-              .from("company_users" as any)
+            const { data: companyUser } = await (supabase as any)
+              .from("company_users")
               .select("company_id, company_role, companies(name)")
               .eq("user_id", currentUser.id)
               .maybeSingle();
