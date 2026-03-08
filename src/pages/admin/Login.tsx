@@ -38,11 +38,15 @@ export default function AdminLogin() {
     e.preventDefault();
     setError("");
     setLoading(true);
+    attemptedLogin.current = true;
     const { error: err } = await signIn(email, password);
-    setLoading(false);
     if (err) {
+      attemptedLogin.current = false;
+      setLoading(false);
       setError("Invalid credentials");
       toast.error("Invalid credentials. Please check your email and password.");
+      return;
+    }
       return;
     }
     // Navigation will happen via the auth state check above
