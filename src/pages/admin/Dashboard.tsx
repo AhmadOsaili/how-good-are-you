@@ -182,7 +182,7 @@ export default function Dashboard() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {leads.map(lead => (
+              {filteredLeads.map(lead => (
                 <TableRow key={lead.id}>
                   <TableCell className="font-medium">{lead.name}</TableCell>
                   <TableCell>
