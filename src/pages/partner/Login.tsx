@@ -34,7 +34,7 @@ export default function PartnerLogin() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitting(true);
+    setError("");
     attemptedLogin.current = true;
     const { error } = await signIn(email, password);
     if (error) {
