@@ -21,8 +21,7 @@ const queryClient = new QueryClient();
 const AppContent = () => {
   useInactivityLogout();
   return (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
+    <>
       <Toaster />
       <Sonner />
       <BrowserRouter>
@@ -42,6 +41,14 @@ const AppContent = () => {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
+    </>
+  );
+};
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <AppContent />
     </TooltipProvider>
   </QueryClientProvider>
 );
