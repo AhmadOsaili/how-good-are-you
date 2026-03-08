@@ -53,7 +53,7 @@ const STATUS_COLORS: Record<LeadStatus, string> = {
 };
 
 export default function PartnerLeads() {
-  const { user } = useAuth();
+  const { user, isPartnerMember } = useAuth();
   const [assignments, setAssignments] = useState<AssignedLead[]>([]);
   const [loading, setLoading] = useState(true);
 
