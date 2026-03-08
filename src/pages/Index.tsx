@@ -19,9 +19,14 @@ export default function Index() {
             <Shield className="h-7 w-7 text-primary" />
             <span className="font-display text-xl font-bold text-foreground">RoofRight</span>
           </div>
-          <Link to="/admin/login" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-            Admin
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link to="/partner/login" className="text-sm font-medium text-primary hover:text-primary/80 transition-colors">
+              Partner Login
+            </Link>
+            <Link to="/admin/login" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              Admin
+            </Link>
+          </div>
         </div>
       </nav>
 
