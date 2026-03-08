@@ -134,6 +134,7 @@ Deno.serve(async (req) => {
         }),
       })
     );
+    }
 
     const results = await Promise.all(emails);
     const errors: string[] = [];
