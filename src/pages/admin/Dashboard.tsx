@@ -88,7 +88,8 @@ export default function Dashboard() {
       toast({ title: "Error", description: error.message, variant: "destructive" });
     } else {
       toast({ title: "Assigned!", description: "Lead assigned to company successfully." });
-      if (assigningLead.status === "new") updateStatus(assigningLead.id, "assigned");
+      if (assigningLead.status === "new") await updateStatus(assigningLead.id, "assigned");
+      fetchLeads();
     }
     setAssigning(false);
     setAssigningLead(null);
