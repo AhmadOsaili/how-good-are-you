@@ -30,7 +30,20 @@ const STATUS_COLORS: Record<string, string> = {
   new: "bg-accent text-accent-foreground",
   assigned: "bg-primary/80 text-primary-foreground",
   contacted: "bg-secondary text-secondary-foreground",
+  in_progress: "bg-primary/60 text-primary-foreground",
+  closed_won: "bg-primary text-primary-foreground",
+  closed_lost: "bg-muted text-muted-foreground",
   closed: "bg-muted text-muted-foreground",
+};
+
+const STATUS_LABELS: Record<string, string> = {
+  new: "New",
+  assigned: "Assigned",
+  contacted: "Contacted",
+  in_progress: "In Progress",
+  closed_won: "Closed Won",
+  closed_lost: "Closed Lost",
+  closed: "Closed",
 };
 
 export default function Dashboard() {
