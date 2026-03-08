@@ -26,6 +26,8 @@ export default function PartnerLogin() {
       attemptedLogin.current = false;
       signOut();
       setSubmitting(false);
+      setError("You don't have partner access.");
+      toast.error("You don't have partner access to this portal.");
       toast.error("You don't have partner access to this portal.");
     }
   }, [loading, user, isPartner, rolesChecked]);
