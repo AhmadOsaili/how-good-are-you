@@ -158,9 +158,9 @@ export default function PartnerLeads() {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <div className="flex items-center gap-1.5 text-sm">
-                      <MapPin className="h-3 w-3 text-muted-foreground" />
-                      {a.lead.address}, {a.lead.zip_code}
+                    <div className="flex items-start gap-1.5 text-sm">
+                      <MapPin className="h-3 w-3 text-muted-foreground mt-0.5 shrink-0" />
+                      <span>{a.lead.address}<br />{a.lead.city}, {a.lead.state} {a.lead.zip_code}</span>
                     </div>
                   </TableCell>
                   <TableCell>{a.lead.roof_age}</TableCell>
