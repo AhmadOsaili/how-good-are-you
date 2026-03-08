@@ -82,7 +82,10 @@ Deno.serve(async (req) => {
     const basicAuth = btoa(`${ihmAccessKey}:${ihmAccessSecret}`);
     const hailUrl = `${IHM_BASE}/ImpactDatesForLatLong?Lat=${lat}&Long=${lng}&Months=60`;
     const hailRes = await fetch(hailUrl, {
-      headers: { Authorization: `Basic ${basicAuth}` },
+      headers: {
+        Authorization: `Basic ${basicAuth}`,
+        "User-Agent": "LovableApp/1.0",
+      },
     });
 
     if (!hailRes.ok) {
