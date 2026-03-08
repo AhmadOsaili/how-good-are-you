@@ -47,9 +47,7 @@ export default function AdminLogin() {
       toast.error("Invalid credentials. Please check your email and password.");
       return;
     }
-      return;
-    }
-    // Navigation will happen via the auth state check above
+    // Navigation will happen via the useEffect above
   }
 
   async function handleResetPassword(e: React.FormEvent) {
