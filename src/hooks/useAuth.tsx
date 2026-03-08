@@ -7,11 +7,13 @@ export function useAuth() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isPartner, setIsPartner] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [rolesChecked, setRolesChecked] = useState(false);
 
   useEffect(() => {
     let mounted = true;
 
     const checkRoles = async (userId: string) => {
+      setRolesChecked(false);
       const { data } = await supabase
         .from("user_roles")
         .select("role")
@@ -20,6 +22,7 @@ export function useAuth() {
       const roles = data?.map((r) => r.role) ?? [];
       setIsAdmin(roles.includes("admin"));
       setIsPartner(roles.includes("partner"));
+      setRolesChecked(true);
     };
 
     // Get initial session first
@@ -29,6 +32,8 @@ export function useAuth() {
       setUser(currentUser);
       if (currentUser) {
         await checkRoles(currentUser.id);
+      } else {
+        setRolesChecked(true);
       }
       if (mounted) setLoading(false);
     });
@@ -44,6 +49,7 @@ export function useAuth() {
         } else {
           setIsAdmin(false);
           setIsPartner(false);
+          setRolesChecked(true);
         }
         if (mounted) setLoading(false);
       }
@@ -60,5 +66,5 @@ export function useAuth() {
 
   const signOut = () => supabase.auth.signOut();
 
-  return { user, isAdmin, isPartner, loading, signIn, signOut };
+  return { user, isAdmin, isPartner, loading, rolesChecked, signIn, signOut };
 }
