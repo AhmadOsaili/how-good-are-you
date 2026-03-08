@@ -75,8 +75,8 @@ export default function Team() {
   }
 
   async function removeMember(id: string) {
-    const { error } = await supabase
-      .from("company_users" as any)
+    const { error } = await (supabase as any)
+      .from("company_users")
       .delete()
       .eq("id", id);
 
