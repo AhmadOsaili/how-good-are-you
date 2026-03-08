@@ -55,6 +55,7 @@ export type Database = {
           company_id: string
           company_role: string
           created_at: string
+          email: string | null
           id: string
           user_id: string
         }
@@ -62,6 +63,7 @@ export type Database = {
           company_id: string
           company_role?: string
           created_at?: string
+          email?: string | null
           id?: string
           user_id: string
         }
@@ -69,6 +71,7 @@ export type Database = {
           company_id?: string
           company_role?: string
           created_at?: string
+          email?: string | null
           id?: string
           user_id?: string
         }
@@ -165,16 +168,19 @@ export type Database = {
       }
       user_roles: {
         Row: {
+          email: string | null
           id: string
           role: Database["public"]["Enums"]["app_role"]
           user_id: string
         }
         Insert: {
+          email?: string | null
           id?: string
           role: Database["public"]["Enums"]["app_role"]
           user_id: string
         }
         Update: {
+          email?: string | null
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
