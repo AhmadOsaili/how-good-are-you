@@ -5,13 +5,14 @@ import {
   SidebarMenu, SidebarMenuItem, SidebarMenuButton,
   SidebarFooter, SidebarInset, SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Building2, ClipboardList, LogOut } from "lucide-react";
+import { Building2, ClipboardList, LogOut, Shield } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const NAV = [
   { to: "/partner/leads", label: "My Leads", icon: ClipboardList },
+  { to: "/", label: "Homepage", icon: Shield },
 ];
 
 export default function PartnerLayout() {
