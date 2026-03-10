@@ -84,6 +84,7 @@ export default function Index() {
           © {new Date().getFullYear()} RoofRight. Protecting homeowners from roofing fraud.
         </div>
       </footer>
+      <RoofingChatbot />
     </div>
   );
 }
