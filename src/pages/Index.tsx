@@ -1,6 +1,7 @@
 import { LeadForm } from "@/components/LeadForm";
 import { Shield, CheckCircle, Users, Star } from "lucide-react";
 import { Link } from "react-router-dom";
+import { RoofingChatbot } from "@/components/RoofingChatbot";
 
 const TRUST_POINTS = [
   { icon: Shield, title: "Fully Vetted", desc: "Every roofer passes background checks, license verification & insurance validation" },
@@ -82,6 +83,7 @@ export default function Index() {
           © {new Date().getFullYear()} RoofRight. Protecting homeowners from roofing fraud.
         </div>
       </footer>
+      <RoofingChatbot />
     </div>
   );
 }
