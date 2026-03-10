@@ -24,7 +24,26 @@ export function LeadForm() {
   });
 
   async function onSubmit(values: LeadFormValues) {
+    if (!captchaToken) {
+      setCaptchaError(true);
+      return;
+    }
+    setCaptchaError(false);
     setSubmitting(true);
+
+    // Verify reCAPTCHA server-side
+    const { data: captchaResult, error: captchaErr } = await supabase.functions.invoke("verify-recaptcha", {
+      body: { token: captchaToken },
+    });
+
+    if (captchaErr || !captchaResult?.success) {
+      setSubmitting(false);
+      recaptchaRef.current?.reset();
+      setCaptchaToken(null);
+      form.setError("root", { message: "reCAPTCHA verification failed. Please try again." });
+      return;
+    }
+
     const { error } = await supabase.from("leads").insert({
       name: values.name,
       address: values.address,
@@ -38,6 +57,8 @@ export function LeadForm() {
     });
     setSubmitting(false);
     if (error) {
+      recaptchaRef.current?.reset();
+      setCaptchaToken(null);
       const msg = error.code === "23505"
         ? "A request for this email and address already exists. If you have a different property, please use a different address."
         : "Something went wrong. Please try again.";
