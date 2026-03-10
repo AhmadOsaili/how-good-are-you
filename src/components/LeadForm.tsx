@@ -8,20 +8,45 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Loader2 } from "lucide-react";
 import { AddressAutocomplete } from "@/components/AddressAutocomplete";
+import ReCAPTCHA from "react-google-recaptcha";
+
+const RECAPTCHA_SITE_KEY = "6LdvYYUsAAAAABoOW5R9gdBrfLjPrpKCzndmpbOW";
 
 export function LeadForm() {
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [captchaError, setCaptchaError] = useState(false);
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
   const form = useForm<LeadFormValues>({
     resolver: zodResolver(leadFormSchema),
     defaultValues: { name: "", address: "", city: "", state: "", zip_code: "", phone: "", email: "", roof_age: "", concerns: "" },
   });
 
   async function onSubmit(values: LeadFormValues) {
+    if (!captchaToken) {
+      setCaptchaError(true);
+      return;
+    }
+    setCaptchaError(false);
     setSubmitting(true);
+
+    // Verify reCAPTCHA server-side
+    const { data: captchaResult, error: captchaErr } = await supabase.functions.invoke("verify-recaptcha", {
+      body: { token: captchaToken },
+    });
+
+    if (captchaErr || !captchaResult?.success) {
+      setSubmitting(false);
+      recaptchaRef.current?.reset();
+      setCaptchaToken(null);
+      form.setError("root", { message: "reCAPTCHA verification failed. Please try again." });
+      return;
+    }
+
     const { error } = await supabase.from("leads").insert({
       name: values.name,
       address: values.address,
@@ -35,6 +60,8 @@ export function LeadForm() {
     });
     setSubmitting(false);
     if (error) {
+      recaptchaRef.current?.reset();
+      setCaptchaToken(null);
       const msg = error.code === "23505"
         ? "A request for this email and address already exists. If you have a different property, please use a different address."
         : "Something went wrong. Please try again.";
@@ -148,6 +175,17 @@ export function LeadForm() {
         {form.formState.errors.root && (
           <p className="text-sm text-destructive">{form.formState.errors.root.message}</p>
         )}
+        <div className="flex flex-col items-center gap-1">
+          <ReCAPTCHA
+            ref={recaptchaRef}
+            sitekey={RECAPTCHA_SITE_KEY}
+            onChange={(token) => { setCaptchaToken(token); setCaptchaError(false); }}
+            onExpired={() => setCaptchaToken(null)}
+          />
+          {captchaError && (
+            <p className="text-sm text-destructive">Please complete the reCAPTCHA verification.</p>
+          )}
+        </div>
         <Button type="submit" size="lg" className="w-full text-base font-semibold" disabled={submitting}>
           {submitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Submitting...</> : "Get My Free Roof Assessment"}
         </Button>
