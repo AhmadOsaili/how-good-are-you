@@ -172,6 +172,17 @@ export function LeadForm() {
         {form.formState.errors.root && (
           <p className="text-sm text-destructive">{form.formState.errors.root.message}</p>
         )}
+        <div className="flex flex-col items-center gap-1">
+          <ReCAPTCHA
+            ref={recaptchaRef}
+            sitekey={RECAPTCHA_SITE_KEY}
+            onChange={(token) => { setCaptchaToken(token); setCaptchaError(false); }}
+            onExpired={() => setCaptchaToken(null)}
+          />
+          {captchaError && (
+            <p className="text-sm text-destructive">Please complete the reCAPTCHA verification.</p>
+          )}
+        </div>
         <Button type="submit" size="lg" className="w-full text-base font-semibold" disabled={submitting}>
           {submitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Submitting...</> : "Get My Free Roof Assessment"}
         </Button>
