@@ -2,7 +2,6 @@ import { LeadForm } from "@/components/LeadForm";
 import { Shield, CheckCircle, Users, Star } from "lucide-react";
 import { Link } from "react-router-dom";
 import { RoofingChatbot } from "@/components/RoofingChatbot";
-import { Link } from "react-router-dom";
 
 const TRUST_POINTS = [
   { icon: Shield, title: "Fully Vetted", desc: "Every roofer passes background checks, license verification & insurance validation" },
