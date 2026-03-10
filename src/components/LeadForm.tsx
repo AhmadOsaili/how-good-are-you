@@ -18,6 +18,9 @@ const RECAPTCHA_SITE_KEY = "6LdvYYUsAAAAABoOW5R9gdBrfLjPrpKCzndmpbOW";
 export function LeadForm() {
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [captchaError, setCaptchaError] = useState(false);
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
   const form = useForm<LeadFormValues>({
     resolver: zodResolver(leadFormSchema),
     defaultValues: { name: "", address: "", city: "", state: "", zip_code: "", phone: "", email: "", roof_age: "", concerns: "" },
