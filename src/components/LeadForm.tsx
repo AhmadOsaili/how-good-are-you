@@ -8,9 +8,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Loader2 } from "lucide-react";
 import { AddressAutocomplete } from "@/components/AddressAutocomplete";
+import ReCAPTCHA from "react-google-recaptcha";
+
+const RECAPTCHA_SITE_KEY = "6LdvYYUsAAAAABoOW5R9gdBrfLjPrpKCzndmpbOW";
 
 export function LeadForm() {
   const navigate = useNavigate();
