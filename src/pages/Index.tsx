@@ -41,10 +41,10 @@ export default function Index() {
                 <Shield className="h-4 w-4" /> Trusted by 1,000+ homeowners
               </div>
               <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-foreground">
-                Stop Roofing <span className="text-primary">Scams</span> Before They Start
+                Your Roof Deserves <span className="text-primary">Vetted</span> Professionals
               </h1>
               <p className="text-lg text-muted-foreground max-w-lg leading-relaxed">
-                The roofing industry is plagued by fraud and insurance scams. We connect you with <strong className="text-foreground">thoroughly vetted, honest roofing professionals</strong> in your area — for free.
+                The roofing industry is largely unlicensed — so we carefully vet every contractor in our network for <strong className="text-foreground">proven expertise, proper insurance, and professionalism</strong>. Connect with trusted pros for free.
               </p>
 
               {/* Trust grid */}
