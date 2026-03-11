@@ -4,9 +4,9 @@ import { Link } from "react-router-dom";
 import { RoofingChatbot } from "@/components/RoofingChatbot";
 
 const TRUST_POINTS = [
-  { icon: Shield, title: "Fully Vetted", desc: "Every roofer passes background checks, license verification & insurance validation" },
-  { icon: CheckCircle, title: "No Scams", desc: "We eliminate fraud — only honest, reputable contractors make our network" },
-  { icon: Users, title: "Local Experts", desc: "Matched with trusted professionals who know your area's building codes" },
+  { icon: Shield, title: "Carefully Vetted", desc: "Every contractor is screened for proven expertise, proper insurance, and professionalism" },
+  { icon: CheckCircle, title: "Industry-Leading Standards", desc: "The roofing industry is largely unlicensed — we hold our partners to a higher bar" },
+  { icon: Users, title: "Local Experts", desc: "Matched with experienced professionals who know your area's building codes" },
   { icon: Star, title: "Free Service", desc: "No cost to homeowners — get connected with quality roofers at zero risk" },
 ];
 
