@@ -189,6 +189,7 @@ export default function Dashboard() {
                 <TableHead>Contact</TableHead>
                 <TableHead>ZIP</TableHead>
                 <TableHead>Roof Age</TableHead>
+                <TableHead>Est. Value</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Assigned To</TableHead>
                 <TableHead>Date</TableHead>
