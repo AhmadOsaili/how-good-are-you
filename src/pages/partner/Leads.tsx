@@ -12,7 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { Phone, Mail, MapPin, Calendar } from "lucide-react";
+import { Phone, Mail, MapPin, Calendar, DollarSign } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
 type LeadStatus = Database["public"]["Enums"]["lead_status"];
