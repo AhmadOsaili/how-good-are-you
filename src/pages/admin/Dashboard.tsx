@@ -23,6 +23,7 @@ type Lead = {
   concerns: string | null;
   status: string;
   created_at: string;
+  estimated_value: number | null;
   assigned_company?: string;
   assigned_company_id?: string;
 };

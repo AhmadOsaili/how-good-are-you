@@ -67,7 +67,10 @@ export function useAuth() {
   const signIn = (email: string, password: string) =>
     supabase.auth.signInWithPassword({ email, password });
 
-  const signOut = () => supabase.auth.signOut();
+  const signOut = async () => {
+    await supabase.auth.signOut();
+    window.location.href = "/";
+  };
 
   return { user, isAdmin, isPartner, isPartnerMember, loading, rolesChecked, signIn, signOut };
 }
