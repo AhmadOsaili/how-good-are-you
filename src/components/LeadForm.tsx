@@ -23,7 +23,7 @@ export function LeadForm() {
   const recaptchaRef = useRef<ReCAPTCHA>(null);
   const form = useForm<LeadFormValues>({
     resolver: zodResolver(leadFormSchema),
-    defaultValues: { name: "", address: "", city: "", state: "", zip_code: "", phone: "", email: "", roof_age: "", concerns: "" },
+    defaultValues: { name: "", address: "", city: "", state: "", zip_code: "", phone: "", email: "", roof_age: "", concerns: "", solar_interest: "" },
   });
 
   async function onSubmit(values: LeadFormValues) {
@@ -56,7 +56,8 @@ export function LeadForm() {
       phone: values.phone,
       email: values.email,
       roof_age: values.roof_age,
-      concerns: values.concerns || null,
+      concerns: values.concerns,
+      solar_interest: values.solar_interest,
     });
     setSubmitting(false);
     if (error) {
@@ -167,8 +168,25 @@ export function LeadForm() {
         </div>
         <FormField control={form.control} name="concerns" render={({ field }) => (
           <FormItem>
-            <FormLabel>Any concerns or details?</FormLabel>
-            <FormControl><Textarea placeholder="Leaks, missing shingles, storm damage..." rows={3} {...field} /></FormControl>
+            <FormLabel>Why do you want a new roof?</FormLabel>
+            <FormControl><Textarea placeholder="Storm damage, aging roof, leaks, upgrading materials..." rows={3} {...field} /></FormControl>
+            <FormMessage />
+          </FormItem>
+        )} />
+        <FormField control={form.control} name="solar_interest" render={({ field }) => (
+          <FormItem>
+            <FormLabel>Are you considering installing solar panels now or in the future?</FormLabel>
+            <Select onValueChange={field.onChange} value={field.value}>
+              <FormControl>
+                <SelectTrigger><SelectValue placeholder="Select an option" /></SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectItem value="yes">Yes</SelectItem>
+                <SelectItem value="no">No</SelectItem>
+                <SelectItem value="maybe">Maybe</SelectItem>
+                <SelectItem value="not_sure">Not sure</SelectItem>
+              </SelectContent>
+            </Select>
             <FormMessage />
           </FormItem>
         )} />
@@ -186,6 +204,9 @@ export function LeadForm() {
             <p className="text-sm text-destructive">Please complete the reCAPTCHA verification.</p>
           )}
         </div>
+        <p className="text-xs text-muted-foreground text-center">
+          By submitting this form, you agree that we and our trusted partners may contact you regarding your roofing project.
+        </p>
         <Button type="submit" size="lg" className="w-full text-base font-semibold" disabled={submitting}>
           {submitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Submitting...</> : "Get My Free Roof Assessment"}
         </Button>

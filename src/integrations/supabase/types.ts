@@ -135,6 +135,7 @@ export type Database = {
           name: string
           phone: string
           roof_age: string
+          solar_interest: string | null
           state: string
           status: Database["public"]["Enums"]["lead_status"]
           updated_at: string
@@ -150,6 +151,7 @@ export type Database = {
           name: string
           phone: string
           roof_age: string
+          solar_interest?: string | null
           state?: string
           status?: Database["public"]["Enums"]["lead_status"]
           updated_at?: string
@@ -165,6 +167,7 @@ export type Database = {
           name?: string
           phone?: string
           roof_age?: string
+          solar_interest?: string | null
           state?: string
           status?: Database["public"]["Enums"]["lead_status"]
           updated_at?: string

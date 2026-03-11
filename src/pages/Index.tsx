@@ -4,9 +4,9 @@ import { Link } from "react-router-dom";
 import { RoofingChatbot } from "@/components/RoofingChatbot";
 
 const TRUST_POINTS = [
-  { icon: Shield, title: "Fully Vetted", desc: "Every roofer passes background checks, license verification & insurance validation" },
-  { icon: CheckCircle, title: "No Scams", desc: "We eliminate fraud — only honest, reputable contractors make our network" },
-  { icon: Users, title: "Local Experts", desc: "Matched with trusted professionals who know your area's building codes" },
+  { icon: Shield, title: "Carefully Vetted", desc: "Every contractor is screened for proven expertise, proper insurance, and professionalism" },
+  { icon: CheckCircle, title: "Industry-Leading Standards", desc: "The roofing industry is largely unlicensed — we hold our partners to a higher bar" },
+  { icon: Users, title: "Local Experts", desc: "Matched with experienced professionals who know your area's building codes" },
   { icon: Star, title: "Free Service", desc: "No cost to homeowners — get connected with quality roofers at zero risk" },
 ];
 
@@ -41,10 +41,10 @@ export default function Index() {
                 <Shield className="h-4 w-4" /> Trusted by 1,000+ homeowners
               </div>
               <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-foreground">
-                Stop Roofing <span className="text-primary">Scams</span> Before They Start
+                Your Roof Deserves <span className="text-primary">Vetted</span> Professionals
               </h1>
               <p className="text-lg text-muted-foreground max-w-lg leading-relaxed">
-                The roofing industry is plagued by fraud and insurance scams. We connect you with <strong className="text-foreground">thoroughly vetted, honest roofing professionals</strong> in your area — for free.
+                The roofing industry is largely unlicensed — so we carefully vet every contractor in our network for <strong className="text-foreground">proven expertise, proper insurance, and professionalism</strong>. Connect with trusted pros for free.
               </p>
 
               {/* Trust grid */}
@@ -80,7 +80,7 @@ export default function Index() {
       {/* Footer */}
       <footer className="border-t py-8">
         <div className="container px-4 text-center text-sm text-muted-foreground">
-          © {new Date().getFullYear()} RoofRight. Protecting homeowners from roofing fraud.
+          © {new Date().getFullYear()} RoofRight. Connecting homeowners with vetted roofing professionals.
         </div>
       </footer>
       <RoofingChatbot />

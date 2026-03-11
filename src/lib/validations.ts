@@ -15,7 +15,8 @@ export const leadFormSchema = z.object({
   phone: z.string().trim().regex(/^[\d\s\-\(\)\+]{7,20}$/, "Please enter a valid phone number"),
   email: z.string().trim().email("Please enter a valid email").max(255),
   roof_age: z.string().min(1, "Please select your roof age"),
-  concerns: z.string().trim().max(1000).optional(),
+  concerns: z.string().trim().min(1, "Please tell us why you want a new roof").max(1000),
+  solar_interest: z.string().min(1, "Please select an option"),
 });
 
 export type LeadFormValues = z.infer<typeof leadFormSchema>;
