@@ -168,8 +168,25 @@ export function LeadForm() {
         </div>
         <FormField control={form.control} name="concerns" render={({ field }) => (
           <FormItem>
-            <FormLabel>Any concerns or details?</FormLabel>
-            <FormControl><Textarea placeholder="Leaks, missing shingles, storm damage..." rows={3} {...field} /></FormControl>
+            <FormLabel>Why do you want a new roof?</FormLabel>
+            <FormControl><Textarea placeholder="Storm damage, aging roof, leaks, upgrading materials..." rows={3} {...field} /></FormControl>
+            <FormMessage />
+          </FormItem>
+        )} />
+        <FormField control={form.control} name="solar_interest" render={({ field }) => (
+          <FormItem>
+            <FormLabel>Are you considering installing solar panels now or in the future?</FormLabel>
+            <Select onValueChange={field.onChange} value={field.value}>
+              <FormControl>
+                <SelectTrigger><SelectValue placeholder="Select an option" /></SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectItem value="yes">Yes</SelectItem>
+                <SelectItem value="no">No</SelectItem>
+                <SelectItem value="maybe">Maybe</SelectItem>
+                <SelectItem value="not_sure">Not sure</SelectItem>
+              </SelectContent>
+            </Select>
             <FormMessage />
           </FormItem>
         )} />
