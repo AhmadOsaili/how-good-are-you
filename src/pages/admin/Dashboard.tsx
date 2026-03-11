@@ -207,6 +207,19 @@ export default function Dashboard() {
                   <TableCell>{lead.zip_code}</TableCell>
                   <TableCell>{lead.roof_age}</TableCell>
                   <TableCell>
+                    <div className="flex items-center gap-1">
+                      <DollarSign className="h-3 w-3 text-muted-foreground" />
+                      <Input
+                        type="text"
+                        className="h-7 w-28 text-xs"
+                        placeholder="0"
+                        defaultValue={lead.estimated_value?.toLocaleString() ?? ""}
+                        onBlur={(e) => updateEstimatedValue(lead.id, e.target.value)}
+                        onKeyDown={(e) => { if (e.key === "Enter") (e.target as HTMLInputElement).blur(); }}
+                      />
+                    </div>
+                  </TableCell>
+                  <TableCell>
                     <Select value={lead.status} onValueChange={v => updateStatus(lead.id, v as "new" | "assigned" | "contacted" | "closed")}>
                       <SelectTrigger className="h-7 w-28 text-xs">
                         <Badge className={`${STATUS_COLORS[lead.status]} text-xs`}>{lead.status}</Badge>
