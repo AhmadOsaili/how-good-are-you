@@ -12,14 +12,19 @@ export function useAuth() {
 
   useEffect(() => {
     let mounted = true;
+    let lastCheckedUserId: string | null = null;
 
     const checkRoles = async (userId: string) => {
-      setRolesChecked(false);
+      // Don't reset rolesChecked if re-checking the same user (e.g. tab refocus)
+      if (lastCheckedUserId !== userId) {
+        setRolesChecked(false);
+      }
       const { data } = await supabase
         .from("user_roles")
         .select("role")
         .eq("user_id", userId);
       if (!mounted) return;
+      lastCheckedUserId = userId;
       const roles = data?.map((r) => r.role) ?? [];
       setIsAdmin(roles.includes("admin"));
       setIsPartner(roles.includes("partner"));
@@ -49,6 +54,7 @@ export function useAuth() {
         if (currentUser) {
           await checkRoles(currentUser.id);
         } else {
+          lastCheckedUserId = null;
           setIsAdmin(false);
           setIsPartner(false);
           setIsPartnerMember(false);
