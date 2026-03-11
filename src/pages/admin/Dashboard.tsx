@@ -138,6 +138,16 @@ export default function Dashboard() {
     }
   }
 
+  async function updateEstimatedValue(id: string, value: string) {
+    const numValue = value === "" ? null : parseFloat(value.replace(/,/g, ""));
+    if (value !== "" && isNaN(numValue!)) return;
+    const { error } = await supabase.from("leads").update({ estimated_value: numValue } as any).eq("id", id);
+    if (!error) {
+      setLeads(prev => prev.map(l => l.id === id ? { ...l, estimated_value: numValue } : l));
+      toast({ title: "Saved", description: "Estimated value updated." });
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
