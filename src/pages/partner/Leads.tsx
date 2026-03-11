@@ -12,7 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { Phone, Mail, MapPin, Calendar } from "lucide-react";
+import { Phone, Mail, MapPin, Calendar, DollarSign } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
 type LeadStatus = Database["public"]["Enums"]["lead_status"];
@@ -34,6 +34,7 @@ interface AssignedLead {
     concerns: string | null;
     status: LeadStatus;
     created_at: string;
+    estimated_value: number | null;
   };
 }
 
@@ -64,7 +65,7 @@ export default function PartnerLeads() {
 
     const { data, error } = await supabase
       .from("lead_assignments")
-      .select("id, lead_id, assigned_at, lead:leads(id, name, email, phone, address, city, state, zip_code, roof_age, concerns, status, created_at)")
+      .select("id, lead_id, assigned_at, lead:leads(id, name, email, phone, address, city, state, zip_code, roof_age, concerns, status, created_at, estimated_value)")
       .order("assigned_at", { ascending: false });
 
     if (error) {
@@ -132,6 +133,7 @@ export default function PartnerLeads() {
                 <TableHead>Contact</TableHead>
                 <TableHead>Address</TableHead>
                 <TableHead>Roof Age</TableHead>
+                <TableHead>Est. Value</TableHead>
                 <TableHead>Concerns</TableHead>
                 <TableHead>Assigned</TableHead>
                 <TableHead>Status</TableHead>
@@ -164,6 +166,16 @@ export default function PartnerLeads() {
                     </div>
                   </TableCell>
                   <TableCell>{a.lead.roof_age}</TableCell>
+                  <TableCell>
+                    {a.lead.estimated_value ? (
+                      <div className="flex items-center gap-1 text-sm">
+                        <DollarSign className="h-3 w-3 text-muted-foreground" />
+                        {a.lead.estimated_value.toLocaleString()}
+                      </div>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">—</span>
+                    )}
+                  </TableCell>
                   <TableCell className="max-w-[200px] truncate text-sm text-muted-foreground">
                     {a.lead.concerns || "—"}
                   </TableCell>

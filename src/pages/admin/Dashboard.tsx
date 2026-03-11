@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, UserPlus, Mail, Send } from "lucide-react";
+import { Loader2, UserPlus, Mail, Send, DollarSign } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 type Lead = {
@@ -22,6 +23,7 @@ type Lead = {
   concerns: string | null;
   status: string;
   created_at: string;
+  estimated_value: number | null;
   assigned_company?: string;
   assigned_company_id?: string;
 };
@@ -136,6 +138,16 @@ export default function Dashboard() {
     }
   }
 
+  async function updateEstimatedValue(id: string, value: string) {
+    const numValue = value === "" ? null : parseFloat(value.replace(/,/g, ""));
+    if (value !== "" && isNaN(numValue!)) return;
+    const { error } = await supabase.from("leads").update({ estimated_value: numValue } as any).eq("id", id);
+    if (!error) {
+      setLeads(prev => prev.map(l => l.id === id ? { ...l, estimated_value: numValue } : l));
+      toast({ title: "Saved", description: "Estimated value updated." });
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -177,6 +189,7 @@ export default function Dashboard() {
                 <TableHead>Contact</TableHead>
                 <TableHead>ZIP</TableHead>
                 <TableHead>Roof Age</TableHead>
+                <TableHead>Est. Value</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Assigned To</TableHead>
                 <TableHead>Date</TableHead>
@@ -193,6 +206,19 @@ export default function Dashboard() {
                   </TableCell>
                   <TableCell>{lead.zip_code}</TableCell>
                   <TableCell>{lead.roof_age}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1">
+                      <DollarSign className="h-3 w-3 text-muted-foreground" />
+                      <Input
+                        type="text"
+                        className="h-7 w-28 text-xs"
+                        placeholder="0"
+                        defaultValue={lead.estimated_value?.toLocaleString() ?? ""}
+                        onBlur={(e) => updateEstimatedValue(lead.id, e.target.value)}
+                        onKeyDown={(e) => { if (e.key === "Enter") (e.target as HTMLInputElement).blur(); }}
+                      />
+                    </div>
+                  </TableCell>
                   <TableCell>
                     <Select value={lead.status} onValueChange={v => updateStatus(lead.id, v as "new" | "assigned" | "contacted" | "closed")}>
                       <SelectTrigger className="h-7 w-28 text-xs">

@@ -16,7 +16,7 @@ const NAV = [
 ];
 
 export default function PartnerLayout() {
-  const { user, isPartner, isPartnerMember, loading, signOut } = useAuth();
+  const { user, isAdmin, isPartner, isPartnerMember, loading, signOut } = useAuth();
 
   if (loading)
     return (
@@ -25,7 +25,9 @@ export default function PartnerLayout() {
       </div>
     );
 
+  // Block admin users from accessing partner portal
   if (!user || (!isPartner && !isPartnerMember)) return <Navigate to="/partner/login" replace />;
+  if (isAdmin) return <Navigate to="/admin/dashboard" replace />;
 
   return (
     <SidebarProvider>
