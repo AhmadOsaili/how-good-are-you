@@ -34,6 +34,7 @@ interface AssignedLead {
     concerns: string | null;
     status: LeadStatus;
     created_at: string;
+    estimated_value: number | null;
   };
 }
 
