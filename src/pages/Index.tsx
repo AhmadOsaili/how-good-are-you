@@ -80,7 +80,7 @@ export default function Index() {
       {/* Footer */}
       <footer className="border-t py-8">
         <div className="container px-4 text-center text-sm text-muted-foreground">
-          © {new Date().getFullYear()} RoofRight. Protecting homeowners from roofing fraud.
+          © {new Date().getFullYear()} RoofRight. Connecting homeowners with vetted roofing professionals.
         </div>
       </footer>
       <RoofingChatbot />

@@ -204,6 +204,9 @@ export function LeadForm() {
             <p className="text-sm text-destructive">Please complete the reCAPTCHA verification.</p>
           )}
         </div>
+        <p className="text-xs text-muted-foreground text-center">
+          By submitting this form, you agree that we and our trusted partners may contact you regarding your roofing project.
+        </p>
         <Button type="submit" size="lg" className="w-full text-base font-semibold" disabled={submitting}>
           {submitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Submitting...</> : "Get My Free Roof Assessment"}
         </Button>
