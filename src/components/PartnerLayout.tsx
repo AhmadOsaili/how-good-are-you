@@ -16,9 +16,9 @@ const NAV = [
 ];
 
 export default function PartnerLayout() {
-  const { user, isAdmin, isPartner, isPartnerMember, loading, signOut } = useAuth();
+  const { user, isAdmin, isPartner, isPartnerMember, loading, rolesChecked, signOut } = useAuth();
 
-  if (loading)
+  if (loading || !rolesChecked)
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Skeleton className="h-8 w-32" />
