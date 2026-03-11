@@ -23,7 +23,7 @@ export function LeadForm() {
   const recaptchaRef = useRef<ReCAPTCHA>(null);
   const form = useForm<LeadFormValues>({
     resolver: zodResolver(leadFormSchema),
-    defaultValues: { name: "", address: "", city: "", state: "", zip_code: "", phone: "", email: "", roof_age: "", concerns: "" },
+    defaultValues: { name: "", address: "", city: "", state: "", zip_code: "", phone: "", email: "", roof_age: "", concerns: "", solar_interest: "" },
   });
 
   async function onSubmit(values: LeadFormValues) {
