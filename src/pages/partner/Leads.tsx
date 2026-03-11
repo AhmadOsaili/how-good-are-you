@@ -166,6 +166,16 @@ export default function PartnerLeads() {
                     </div>
                   </TableCell>
                   <TableCell>{a.lead.roof_age}</TableCell>
+                  <TableCell>
+                    {a.lead.estimated_value ? (
+                      <div className="flex items-center gap-1 text-sm">
+                        <DollarSign className="h-3 w-3 text-muted-foreground" />
+                        {a.lead.estimated_value.toLocaleString()}
+                      </div>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">—</span>
+                    )}
+                  </TableCell>
                   <TableCell className="max-w-[200px] truncate text-sm text-muted-foreground">
                     {a.lead.concerns || "—"}
                   </TableCell>
