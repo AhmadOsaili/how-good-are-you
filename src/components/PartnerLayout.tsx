@@ -16,7 +16,7 @@ const NAV = [
 ];
 
 export default function PartnerLayout() {
-  const { user, isPartner, isPartnerMember, loading, signOut } = useAuth();
+  const { user, isAdmin, isPartner, isPartnerMember, loading, signOut } = useAuth();
 
   if (loading)
     return (
