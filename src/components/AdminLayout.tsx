@@ -13,8 +13,6 @@ const NAV = [
 ];
 
 export default function AdminLayout() {
-  const { user, isAdmin, loading, signOut } = useAuth();
-
   const { user, isAdmin, loading, rolesChecked, signOut } = useAuth();
 
   if (loading || !rolesChecked) return <div className="min-h-screen flex items-center justify-center"><Skeleton className="h-8 w-32" /></div>;
