@@ -56,7 +56,8 @@ export function LeadForm() {
       phone: values.phone,
       email: values.email,
       roof_age: values.roof_age,
-      concerns: values.concerns || null,
+      concerns: values.concerns,
+      solar_interest: values.solar_interest,
     });
     setSubmitting(false);
     if (error) {
