@@ -1,0 +1,1 @@
+ALTER TABLE public.leads ADD COLUMN solar_interest text;
