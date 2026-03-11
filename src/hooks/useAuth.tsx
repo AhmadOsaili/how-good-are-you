@@ -9,6 +9,7 @@ export function useAuth() {
   const [isPartnerMember, setIsPartnerMember] = useState(false);
   const [loading, setLoading] = useState(true);
   const [rolesChecked, setRolesChecked] = useState(false);
+  const signingOut = useRef(false);
 
   useEffect(() => {
     let mounted = true;
