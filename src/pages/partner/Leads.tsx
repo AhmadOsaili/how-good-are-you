@@ -133,6 +133,7 @@ export default function PartnerLeads() {
                 <TableHead>Contact</TableHead>
                 <TableHead>Address</TableHead>
                 <TableHead>Roof Age</TableHead>
+                <TableHead>Est. Value</TableHead>
                 <TableHead>Concerns</TableHead>
                 <TableHead>Assigned</TableHead>
                 <TableHead>Status</TableHead>
