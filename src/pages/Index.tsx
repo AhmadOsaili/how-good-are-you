@@ -5,8 +5,8 @@ import { RoofingChatbot } from "@/components/RoofingChatbot";
 
 const TRUST_POINTS = [
   { icon: Shield, title: "Carefully Vetted", desc: "Every contractor is screened for proven expertise, proper insurance, and professionalism" },
-  { icon: CheckCircle, title: "Industry-Leading Standards", desc: "The roofing industry is largely unlicensed — we hold our partners to a higher bar" },
-  { icon: Users, title: "Local Experts", desc: "Matched with experienced professionals who know your area's building codes" },
+  { icon: CheckCircle, title: "No License Required in Dallas", desc: "Dallas doesn't require a roofing license — anyone can call themselves a roofer. We fix that." },
+  { icon: Users, title: "Dallas Roofing Experts", desc: "Matched with experienced professionals who know Dallas building codes and North Texas weather" },
   { icon: Star, title: "Free Service", desc: "No cost to homeowners — get connected with quality roofers at zero risk" },
 ];
 
