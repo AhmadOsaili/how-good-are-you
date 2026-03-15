@@ -38,13 +38,13 @@ export default function Index() {
           <div className="grid lg:grid-cols-2 gap-12 items-start">
             <div className="space-y-6 pt-4">
               <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary">
-                <Shield className="h-4 w-4" /> Trusted by 1,000+ homeowners
+                <Shield className="h-4 w-4" /> Trusted by Dallas homeowners
               </div>
               <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-foreground">
-                Your Roof Deserves <span className="text-primary">Vetted</span> Professionals
+                Dallas Doesn't License Roofers. <span className="text-primary">We Vet Them.</span>
               </h1>
               <p className="text-lg text-muted-foreground max-w-lg leading-relaxed">
-                The roofing industry is largely unlicensed — so we carefully vet every contractor in our network for <strong className="text-foreground">proven expertise, proper insurance, and professionalism</strong>. Connect with trusted pros for free.
+                In Dallas, <strong className="text-foreground">anyone can knock on your door and call themselves a roofer</strong> — no license required. We carefully screen every contractor in our network for proven expertise, proper insurance, and professionalism. Get matched for free.
               </p>
 
               {/* Trust grid */}
