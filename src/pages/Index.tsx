@@ -38,7 +38,7 @@ export default function Index() {
           <div className="grid lg:grid-cols-2 gap-12 items-start">
             <div className="space-y-6 pt-4">
               <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary">
-                <Shield className="h-4 w-4" /> Trusted by Texas homeowners
+                <Shield className="h-4 w-4" /> Trusted by 1,000+ Texas homeowners
               </div>
               <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-foreground">
                 Texas Doesn't License Roofers. <span className="text-primary">We Vet Them.</span>
