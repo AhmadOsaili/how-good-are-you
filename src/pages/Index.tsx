@@ -1,6 +1,6 @@
 import { LeadForm } from "@/components/LeadForm";
-import { Shield, CheckCircle, Users, Star, Award, TrendingUp, FileCheck, BarChart3, HelpCircle } from "lucide-react";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Shield, CheckCircle, Users, Star, Award, TrendingUp, FileCheck, BarChart3 } from "lucide-react";
+
 import { Link } from "react-router-dom";
 import { RoofingChatbot } from "@/components/RoofingChatbot";
 
