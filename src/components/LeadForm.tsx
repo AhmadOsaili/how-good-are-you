@@ -255,9 +255,9 @@ export function LeadForm() {
                 </FormControl>
                 <SelectContent>
                   <SelectItem value="yes">Yes</SelectItem>
+                  <SelectItem value="Yes, actively looking">Yes, actively looking</SelectItem>
                   <SelectItem value="no">No</SelectItem>
                   <SelectItem value="maybe">Maybe</SelectItem>
-                  <SelectItem value="not_sure">Not sure</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
