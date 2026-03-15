@@ -1,6 +1,6 @@
 import { LeadForm } from "@/components/LeadForm";
-import { Shield, CheckCircle, Users, Star, Award, TrendingUp, FileCheck, BarChart3, HelpCircle } from "lucide-react";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Shield, CheckCircle, Users, Star, Award, TrendingUp, FileCheck, BarChart3 } from "lucide-react";
+
 import { Link } from "react-router-dom";
 import { RoofingChatbot } from "@/components/RoofingChatbot";
 
@@ -180,41 +180,6 @@ export default function Index() {
         </div>
       </section>
 
-      {/* FAQ */}
-      <section className="py-16 md:py-20">
-        <div className="container px-4">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary mb-4">
-              <HelpCircle className="h-4 w-4" /> Common Questions
-            </div>
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
-              Frequently Asked Questions
-            </h2>
-          </div>
-          <div className="max-w-3xl mx-auto">
-            <Accordion type="single" collapsible className="space-y-3">
-              {[
-                { q: "Is RoofRight really free for homeowners?", a: "Yes, 100%. Homeowners never pay a dime to use our service. We're funded by the vetted roofing companies in our network who value quality leads from informed homeowners." },
-                { q: "Why doesn't Texas require a roofing license?", a: "Texas is one of the few states with no statewide roofing license requirement. This means anyone — regardless of experience or training — can legally offer roofing services. That's why third-party vetting like ours is critical to protecting homeowners." },
-                { q: "How do you vet roofing contractors?", a: "We use a rigorous 12-point screening process modeled after NRCA best practices. This includes verifying general liability and workers' comp insurance, checking workmanship history, reviewing customer satisfaction data, and confirming financial stability. Only contractors who pass every check join our network." },
-                { q: "How quickly will I be matched with a contractor?", a: "Most homeowners are matched within 24–48 hours. We match based on your roof type, project scope, location, and contractor availability to ensure the best fit — not just the fastest response." },
-                { q: "What if I'm not satisfied with my matched contractor?", a: "Your satisfaction is our priority. If you're not happy with your match, contact us and we'll connect you with another vetted contractor at no additional cost. We also track feedback to continuously improve our network quality." },
-                { q: "Do you cover my area in Texas?", a: "We serve homeowners across the entire state of Texas, including major metro areas like Dallas–Fort Worth, Houston, San Antonio, Austin, and surrounding communities. Our network is always expanding to ensure coverage in your area." },
-                { q: "What types of roofing projects do you handle?", a: "Our network handles everything from minor repairs and inspections to full roof replacements, storm damage restoration, and new construction. We also match homeowners interested in solar-ready roofing solutions." },
-              ].map(({ q, a }, i) => (
-                <AccordionItem key={i} value={`faq-${i}`} className="bg-card border rounded-xl px-6">
-                  <AccordionTrigger className="text-sm font-semibold text-foreground hover:no-underline">
-                    {q}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-sm text-muted-foreground leading-relaxed">
-                    {a}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </div>
-        </div>
-      </section>
 
       {/* Footer */}
       <footer className="border-t py-8">
