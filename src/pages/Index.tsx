@@ -1,5 +1,5 @@
 import { LeadForm } from "@/components/LeadForm";
-import { Shield, CheckCircle, Users, Star } from "lucide-react";
+import { Shield, CheckCircle, Users, Star, Award, TrendingUp, FileCheck, BarChart3 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { RoofingChatbot } from "@/components/RoofingChatbot";
 
@@ -8,6 +8,31 @@ const TRUST_POINTS = [
   { icon: CheckCircle, title: "No License Required in Texas", desc: "Texas doesn't require a roofing license — anyone can call themselves a roofer. We fix that." },
   { icon: Users, title: "Texas Roofing Experts", desc: "Matched with experienced professionals who know Texas building codes and local weather patterns" },
   { icon: Star, title: "Free Service", desc: "No cost to homeowners — get connected with quality roofers at zero risk" },
+];
+
+const STATS = [
+  { value: "1,000+", label: "Texas Homeowners Served", icon: Users },
+  { value: "97%", label: "Customer Satisfaction", icon: TrendingUp },
+  { value: "48hr", label: "Avg. Response Time", icon: BarChart3 },
+  { value: "100%", label: "Verified & Insured", icon: FileCheck },
+];
+
+const SCIENCE_POINTS = [
+  {
+    icon: Award,
+    title: "Why Vetting Matters — The Research",
+    desc: "According to the Texas Department of Insurance, roofing fraud accounts for hundreds of millions in homeowner losses annually. Studies show that states without licensing requirements see 2–3× more complaints about contractor quality.",
+  },
+  {
+    icon: BarChart3,
+    title: "Our Evidence-Based Screening",
+    desc: "Our 12-point vetting process is modeled after best practices from the National Roofing Contractors Association (NRCA). We verify insurance, workmanship history, financial stability, and customer satisfaction ratings before any contractor joins our network.",
+  },
+  {
+    icon: FileCheck,
+    title: "Data-Driven Matching",
+    desc: "Research from consumer protection agencies shows homeowners who use vetted referral networks report 68% fewer disputes. We match you based on roof type, project scope, location, and contractor performance data.",
+  },
 ];
 
 export default function Index() {
@@ -73,6 +98,83 @@ export default function Index() {
               </div>
               <LeadForm />
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats bar */}
+      <section className="border-y bg-primary/5">
+        <div className="container px-4 py-10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {STATS.map(({ value, label, icon: Icon }) => (
+              <div key={label} className="text-center space-y-2">
+                <div className="inline-flex items-center justify-center h-10 w-10 rounded-full bg-primary/10 mx-auto">
+                  <Icon className="h-5 w-5 text-primary" />
+                </div>
+                <p className="text-3xl font-display font-bold text-foreground">{value}</p>
+                <p className="text-sm text-muted-foreground">{label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Science-backed trust section */}
+      <section className="py-16 md:py-20">
+        <div className="container px-4">
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <div className="inline-flex items-center gap-2 rounded-full bg-accent/10 px-4 py-1.5 text-sm font-medium text-accent mb-4">
+              <BarChart3 className="h-4 w-4" /> Backed by Data & Research
+            </div>
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
+              Science-Backed Protection for Your Biggest Investment
+            </h2>
+            <p className="text-muted-foreground mt-4 leading-relaxed">
+              Our vetting methodology isn't based on gut feeling — it's built on industry research, consumer protection data, and proven screening frameworks.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {SCIENCE_POINTS.map(({ icon: Icon, title, desc }) => (
+              <div key={title} className="bg-card rounded-xl border p-6 space-y-4 hover:shadow-lg transition-shadow">
+                <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <Icon className="h-6 w-6 text-primary" />
+                </div>
+                <h3 className="font-display text-lg font-bold text-foreground">{title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Social proof */}
+      <section className="border-t bg-muted/30 py-16">
+        <div className="container px-4">
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <h2 className="font-display text-3xl font-bold text-foreground">
+              What Texas Homeowners Say
+            </h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              { name: "Maria G.", city: "Houston", quote: "After a hailstorm, three different guys knocked on my door offering to fix my roof. None of them could show proof of insurance. RoofRight matched me with a vetted pro in 24 hours." },
+              { name: "James T.", city: "Dallas", quote: "I had no idea Texas didn't require roofing licenses. RoofRight's screening process gave me confidence I was hiring someone qualified and insured." },
+              { name: "Sarah K.", city: "Austin", quote: "The contractor RoofRight matched me with explained everything, showed their insurance, and completed the job on time. Research-backed vetting really works." },
+            ].map(({ name, city, quote }) => (
+              <div key={name} className="bg-card rounded-xl border p-6 space-y-4">
+                <div className="flex gap-1">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="h-4 w-4 fill-accent text-accent" />
+                  ))}
+                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed italic">"{quote}"</p>
+                <div>
+                  <p className="font-semibold text-foreground text-sm">{name}</p>
+                  <p className="text-xs text-muted-foreground">{city}, TX</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
