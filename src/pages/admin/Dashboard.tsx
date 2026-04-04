@@ -233,6 +233,30 @@ export default function Dashboard() {
                   <TableCell>{lead.zip_code}</TableCell>
                   <TableCell>{lead.roof_age}</TableCell>
                   <TableCell>
+                    <div className="flex items-center gap-1.5">
+                      {lead.lead_score !== null ? (
+                        <div className="flex items-center gap-1" title={lead.score_reasoning || ""}>
+                          <BarChart3 className={`h-3.5 w-3.5 ${getScoreColor(lead.lead_score)}`} />
+                          <span className={`font-semibold text-sm ${getScoreColor(lead.lead_score)}`}>
+                            {lead.lead_score}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">—</span>
+                      )}
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-6 w-6 p-0"
+                        onClick={() => rescoreLead(lead.id)}
+                        disabled={rescoring === lead.id}
+                        title="Rescore lead"
+                      >
+                        <RefreshCw className={`h-3 w-3 ${rescoring === lead.id ? "animate-spin" : ""}`} />
+                      </Button>
+                    </div>
+                  </TableCell>
+                  <TableCell>
                     <div className="flex items-center gap-1">
                       <DollarSign className="h-3 w-3 text-muted-foreground" />
                       <Input
