@@ -151,6 +151,28 @@ export default function Dashboard() {
     }
   }
 
+  async function rescoreLead(leadId: string) {
+    setRescoring(leadId);
+    const { error } = await supabase.functions.invoke("score-lead", {
+      body: { lead_id: leadId },
+    });
+    if (error) {
+      toast({ title: "Error", description: "Failed to rescore lead.", variant: "destructive" });
+    } else {
+      toast({ title: "Rescored!", description: "Lead score updated." });
+      fetchLeads();
+    }
+    setRescoring(null);
+  }
+
+  function getScoreColor(score: number | null): string {
+    if (score === null) return "text-muted-foreground";
+    if (score >= 75) return "text-green-600";
+    if (score >= 50) return "text-yellow-600";
+    if (score >= 25) return "text-orange-500";
+    return "text-red-500";
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
