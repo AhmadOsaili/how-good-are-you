@@ -48,6 +48,7 @@ export default function Dashboard() {
   const [assigningLead, setAssigningLead] = useState<Lead | null>(null);
   const [selectedCompany, setSelectedCompany] = useState("");
   const [assigning, setAssigning] = useState(false);
+  const [rescoring, setRescoring] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
