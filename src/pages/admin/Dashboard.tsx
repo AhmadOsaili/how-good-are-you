@@ -236,12 +236,21 @@ export default function Dashboard() {
                   <TableCell>
                     <div className="flex items-center gap-1.5">
                       {lead.lead_score !== null ? (
-                        <div className="flex items-center gap-1" title={lead.score_reasoning || ""}>
-                          <BarChart3 className={`h-3.5 w-3.5 ${getScoreColor(lead.lead_score)}`} />
-                          <span className={`font-semibold text-sm ${getScoreColor(lead.lead_score)}`}>
-                            {lead.lead_score}
-                          </span>
-                        </div>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <div className="flex items-center gap-1 cursor-help">
+                                <BarChart3 className={`h-3.5 w-3.5 ${getScoreColor(lead.lead_score)}`} />
+                                <span className={`font-semibold text-sm ${getScoreColor(lead.lead_score)}`}>
+                                  {lead.lead_score}
+                                </span>
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-xs text-xs">
+                              {lead.score_reasoning || "No reasoning available"}
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       ) : (
                         <span className="text-xs text-muted-foreground">—</span>
                       )}
