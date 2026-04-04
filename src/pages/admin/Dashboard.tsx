@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, UserPlus, Mail, Send, DollarSign } from "lucide-react";
+import { Loader2, UserPlus, Mail, Send, DollarSign, BarChart3, RefreshCw } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
@@ -24,6 +25,8 @@ type Lead = {
   status: string;
   created_at: string;
   estimated_value: number | null;
+  lead_score: number | null;
+  score_reasoning: string | null;
   assigned_company?: string;
   assigned_company_id?: string;
 };
@@ -46,6 +49,7 @@ export default function Dashboard() {
   const [assigningLead, setAssigningLead] = useState<Lead | null>(null);
   const [selectedCompany, setSelectedCompany] = useState("");
   const [assigning, setAssigning] = useState(false);
+  const [rescoring, setRescoring] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -148,6 +152,28 @@ export default function Dashboard() {
     }
   }
 
+  async function rescoreLead(leadId: string) {
+    setRescoring(leadId);
+    const { error } = await supabase.functions.invoke("score-lead", {
+      body: { lead_id: leadId },
+    });
+    if (error) {
+      toast({ title: "Error", description: "Failed to rescore lead.", variant: "destructive" });
+    } else {
+      toast({ title: "Rescored!", description: "Lead score updated." });
+      fetchLeads();
+    }
+    setRescoring(null);
+  }
+
+  function getScoreColor(score: number | null): string {
+    if (score === null) return "text-muted-foreground";
+    if (score >= 75) return "text-green-600";
+    if (score >= 50) return "text-yellow-600";
+    if (score >= 25) return "text-orange-500";
+    return "text-red-500";
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -189,6 +215,7 @@ export default function Dashboard() {
                 <TableHead>Contact</TableHead>
                 <TableHead>ZIP</TableHead>
                 <TableHead>Roof Age</TableHead>
+                <TableHead>Score</TableHead>
                 <TableHead>Est. Value</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Assigned To</TableHead>
@@ -206,6 +233,39 @@ export default function Dashboard() {
                   </TableCell>
                   <TableCell>{lead.zip_code}</TableCell>
                   <TableCell>{lead.roof_age}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1.5">
+                      {lead.lead_score !== null ? (
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <div className="flex items-center gap-1 cursor-help">
+                                <BarChart3 className={`h-3.5 w-3.5 ${getScoreColor(lead.lead_score)}`} />
+                                <span className={`font-semibold text-sm ${getScoreColor(lead.lead_score)}`}>
+                                  {lead.lead_score}
+                                </span>
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-xs text-xs">
+                              {lead.score_reasoning || "No reasoning available"}
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">—</span>
+                      )}
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-6 w-6 p-0"
+                        onClick={() => rescoreLead(lead.id)}
+                        disabled={rescoring === lead.id}
+                        title="Rescore lead"
+                      >
+                        <RefreshCw className={`h-3 w-3 ${rescoring === lead.id ? "animate-spin" : ""}`} />
+                      </Button>
+                    </div>
+                  </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
                       <DollarSign className="h-3 w-3 text-muted-foreground" />

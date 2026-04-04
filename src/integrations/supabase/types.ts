@@ -133,9 +133,11 @@ export type Database = {
           email: string
           estimated_value: number | null
           id: string
+          lead_score: number | null
           name: string
           phone: string
           roof_age: string
+          score_reasoning: string | null
           solar_interest: string | null
           state: string
           status: Database["public"]["Enums"]["lead_status"]
@@ -150,9 +152,11 @@ export type Database = {
           email: string
           estimated_value?: number | null
           id?: string
+          lead_score?: number | null
           name: string
           phone: string
           roof_age: string
+          score_reasoning?: string | null
           solar_interest?: string | null
           state?: string
           status?: Database["public"]["Enums"]["lead_status"]
@@ -167,9 +171,11 @@ export type Database = {
           email?: string
           estimated_value?: number | null
           id?: string
+          lead_score?: number | null
           name?: string
           phone?: string
           roof_age?: string
+          score_reasoning?: string | null
           solar_interest?: string | null
           state?: string
           status?: Database["public"]["Enums"]["lead_status"]
