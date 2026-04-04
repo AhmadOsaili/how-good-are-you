@@ -24,6 +24,8 @@ type Lead = {
   status: string;
   created_at: string;
   estimated_value: number | null;
+  lead_score: number | null;
+  score_reasoning: string | null;
   assigned_company?: string;
   assigned_company_id?: string;
 };
