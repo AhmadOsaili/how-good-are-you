@@ -58,7 +58,7 @@ export function LeadForm() {
       return;
     }
 
-    const { error } = await supabase.from("leads").insert({
+    const { data: insertedLead, error } = await supabase.from("leads").insert({
       name: values.name,
       address: values.address,
       city: values.city,
@@ -69,7 +69,7 @@ export function LeadForm() {
       roof_age: values.roof_age,
       concerns: values.concerns,
       solar_interest: values.solar_interest,
-    });
+    }).select("id").single();
     setSubmitting(false);
     if (error) {
       recaptchaRef.current?.reset();
@@ -81,6 +81,14 @@ export function LeadForm() {
       form.setError("root", { message: msg });
       return;
     }
+
+    // Fire-and-forget: trigger AI lead scoring
+    if (insertedLead?.id) {
+      supabase.functions.invoke("score-lead", {
+        body: { lead_id: insertedLead.id },
+      }).catch((err) => console.error("Lead scoring error:", err));
+    }
+
     navigate("/thank-you");
   }
 
